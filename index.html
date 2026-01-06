@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Opening Downloader...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+(function () {
+  const url = "https://desisavar.pages.dev/";
+
+  // Telegram WebApp detect
+  if (window.Telegram && Telegram.WebApp) {
+    Telegram.WebApp.openLink(url, { try_instant_view: false });
+  } else {
+    window.location.href = url;
+  }
+})();
+</script>
+
+<style>
+body{
+  font-family:Arial;
+  text-align:center;
+  padding:40px;
+}
+</style>
+</head>
+<body>
+<h3>Opening Downloader in browser…</h3>
+<p>Agar automatically open na ho, to niche tap kare</p>
+<a href="https://desisavar.pages.dev/" target="_blank">Open Manually</a>
+</body>
+</html>
