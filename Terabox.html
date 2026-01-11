@@ -1,129 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terabox Video Player & Downloader</title>
-    <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terabox Video Player & Downloader</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* Blue Professional Gradient */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333;
-        }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-        /* Card Container */
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-        }
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
 
-        /* Header Styling */
-        .logo-area {
-            margin-bottom: 25px;
-        }
+/* Main Card */
+.container{
+  background:#fff;
+  padding:40px;
+  border-radius:16px;
+  box-shadow:0 15px 30px rgba(0,0,0,.2);
+  width:100%;
+  max-width:420px;
+  text-align:center;
+}
 
-        .logo-area h1 {
-            font-size: 24px;
-            color: #1e3c72;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
+/* Buttons */
+.btn-group{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  margin-top:20px;
+}
 
-        .logo-area p {
-            font-size: 14px;
-            color: #666;
-        }
+.btn{
+  text-decoration:none;
+  padding:15px;
+  border-radius:10px;
+  background:#f8f9fa;
+  color:#333;
+  border:2px solid #e9ecef;
+  font-weight:600;
+  transition:.3s;
+}
 
-        /* Button Styling */
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+.btn:hover{
+  background:#1e3c72;
+  color:#fff;
+  border-color:#1e3c72;
+}
 
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            background-color: #f8f9fa;
-            color: #333;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+/* 🔔 Note text */
+.note{
+  margin-top:8px;
+  font-size:13px;
+  color:#d9534f;
+  font-weight:600;
+}
 
-        /* Button Hover Effects */
-        .btn:hover {
-            background-color: #1e3c72;
-            color: #ffffff;
-            border-color: #1e3c72;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
-        }
-
-        /* Icons inside buttons (using CSS shapes/text for simplicity) */
-        .btn::before {
-            content: '⬇'; /* Download Icon */
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 25px;
-            font-size: 12px;
-            color: #999;
-        }
-    </style>
+/* Bottom Ad */
+.bottom-ad{
+  width:100%;
+  margin-top:30px;
+  padding:10px;
+  text-align:center;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="container">
-        <div class="logo-area">
-            <!-- आप यहाँ अपना लोगो भी लगा सकते हैं -->
-            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#1e3c72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 10px;">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <h1>Terabox Video Player & Downloader</h1>
-            <p>Select a server to download fast</p>
-        </div>
+<div class="container">
+  <h2>Terabox Video Player & Downloader</h2>
 
-        <div class="btn-group">
-            <!-- यहाँ href="" के अंदर अपनी लिंक डालें -->
-            <a href="https://www.ztera.fun/" class="btn">Terabox Downloader 1</a>
-            <a href="https://1024teradownloader.com/" class="btn">Terabox Downloader 2</a>
-            <a href="https://iteraplay.in/" class="btn">Terabox Downloader 3</a>
-            <a href="LINK_4_HERE" class="btn">Terabox Downloader 4</a>
-        </div>
+  <div class="btn-group">
+    <a href="https://ztera.fun" class="btn">Terabox Downloader 1</a>
+    <a href="https://1024teradownloader.com/" class="btn">Terabox Downloader 2</a>
+    <a href="https://iteraplay.in/" class="btn">Terabox Downloader 3</a>
+    <a href="LINK_4_HERE" class="btn">Terabox Downloader 4</a>
 
-        <div class="footer">
-            &copy; 2024 Video Tools. All rights reserved.
-        </div>
+    <!-- ✅ NOTE BELOW BUTTON 4 -->
+    <div class="note">
+      Note :- Terabox Downloader 1 Currently Not Working
     </div>
-<script async="async" data-cfasync="false" src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/invoke.js"></script>
-<div id="container-e1b6987953b44b06af771c434831e631"></div>
+  </div>
+</div>
+
+<!-- ✅ AD AT BOTTOM OF BODY -->
+<div class="bottom-ad">
+  <script async data-cfasync="false"
+    src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/invoke.js">
+  </script>
+  <div id="container-e1b6987953b44b06af771c434831e631"></div>
+</div>
+
 </body>
 </html>
