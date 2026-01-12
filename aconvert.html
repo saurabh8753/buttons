@@ -3,33 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video to Audio Converter</title>
+    <title>Pro Video Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f9; }
-        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        input { margin: 20px 0; }
-        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-        button:disabled { background-color: #ccc; }
-        #status { margin-top: 15px; color: #555; }
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text);
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0;
+        }
+
+        .container { 
+            background: var(--card); 
+            width: 100%;
+            max-width: 450px;
+            padding: 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            text-align: center; 
+        }
+
+        h2 { font-weight: 700; margin-bottom: 8px; color: #0f172a; }
+        p { color: #64748b; font-size: 14px; margin-bottom: 30px; }
+
+        /* Upload Area Styling */
+        .upload-area {
+            border: 2px dashed #e2e8f0;
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fdfdfd;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        input[type="file"] { display: none; }
+
+        .btn { 
+            background-color: var(--primary); 
+            color: white; 
+            border: none; 
+            width: 100%;
+            padding: 14px; 
+            border-radius: 12px; 
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer; 
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover { background-color: var(--primary-hover); }
+        .btn:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+
+        #status { 
+            margin-top: 20px; 
+            font-size: 14px; 
+            font-weight: 500;
+            color: var(--primary); 
+        }
+
+        .download-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .download-link {
+            color: #16a34a;
+            text-decoration: none;
+            font-weight: 700;
+            display: block;
+        }
+
+        /* Spinner Animation */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Video to Audio Converter</h2>
-    <p>Apni video file select karein:</p>
-    <input type="file" id="videoInput" accept="video/*">
-    <br>
-    <button id="convertBtn">Convert to Audio (WAV)</button>
+    <h2>Video to Audio</h2>
+    <p>High quality WAV format mein convert karein</p>
+    
+    <label for="videoInput" class="upload-area" id="dropZone">
+        <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
+        <div id="fileName">Video file yahan click karke select karein</div>
+        <input type="file" id="videoInput" accept="video/*">
+    </label>
+
+    <button id="convertBtn" class="btn">
+        <div class="spinner" id="loader"></div>
+        <span id="btnText">Convert Karein</span>
+    </button>
+
     <div id="status"></div>
-    <div id="downloadLink"></div>
+    
+    <div id="downloadBox" class="download-box">
+        <span style="font-size: 20px; display: block; margin-bottom: 5px;">✅</span>
+        <a id="finalLink" class="download-link" href="#" download="converted_audio.wav">Audio Download Karein</a>
+    </div>
 </div>
 
 <script>
     const videoInput = document.getElementById('videoInput');
     const convertBtn = document.getElementById('convertBtn');
     const status = document.getElementById('status');
-    const downloadLink = document.getElementById('downloadLink');
+    const downloadBox = document.getElementById('downloadBox');
+    const finalLink = document.getElementById('finalLink');
+    const fileNameDisplay = document.getElementById('fileName');
+    const loader = document.getElementById('loader');
+    const btnText = document.getElementById('btnText');
+
+    // File select hone par naam dikhana
+    videoInput.addEventListener('change', (e) => {
+        if(e.target.files[0]) {
+            fileNameDisplay.innerText = e.target.files[0].name;
+            fileNameDisplay.style.color = "#1e293b";
+            fileNameDisplay.style.fontWeight = "600";
+        }
+    });
 
     convertBtn.addEventListener('click', async () => {
         const file = videoInput.files[0];
@@ -38,8 +165,12 @@
             return;
         }
 
-        status.innerText = "Processing... Intezar karein.";
+        // UI Update: Loading start
+        status.innerText = "Processing... Isme thoda samay lag sakta hai.";
+        loader.style.display = "block";
+        btnText.innerText = "Converting...";
         convertBtn.disabled = true;
+        downloadBox.style.display = "none";
 
         const reader = new FileReader();
         reader.onload = async function() {
@@ -47,68 +178,56 @@
                 const arrayBuffer = reader.result;
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // Video se audio data decode karna
                 const decodedData = await audioCtx.decodeAudioData(arrayBuffer);
-                
-                // Audio ko WAV format mein convert karna
                 const wavBlob = bufferToWave(decodedData, decodedData.length);
                 const url = URL.createObjectURL(wavBlob);
 
-                // Download link dikhana
-                downloadLink.innerHTML = `<br><a href="${url}" download="converted_audio.wav">Audio Download Karein</a>`;
-                status.innerText = "Conversion Safal raha!";
+                // UI Update: Success
+                finalLink.href = url;
+                downloadBox.style.display = "block";
+                status.innerText = "";
             } catch (error) {
-                status.innerText = "Error: Video process nahi ho saki.";
+                status.innerText = "Error: Video format support nahi hai.";
+                status.style.color = "#ef4444";
                 console.error(error);
             }
+            loader.style.display = "none";
+            btnText.innerText = "Convert Karein";
             convertBtn.disabled = false;
         };
 
         reader.readAsArrayBuffer(file);
     });
 
-    // Helper function: AudioBuffer ko WAV format mein badalne ke liye
+    // WAV Conversion Logic
     function bufferToWave(abuffer, len) {
         let numOfChan = abuffer.numberOfChannels,
             length = len * numOfChan * 2 + 44,
             buffer = new ArrayBuffer(length),
             view = new DataView(buffer),
             channels = [], i, sample,
-            offset = 0,
-            pos = 0;
+            offset = 0, pos = 0;
 
-        // WAV Header likhna
-        setUint32(0x46464952);                         // "RIFF"
-        setUint32(length - 8);                         // file length - 8
-        setUint32(0x45564157);                         // "WAVE"
-        setUint32(0x20746d66);                         // "fmt " chunk
-        setUint32(16);                                 // length = 16
-        setUint16(1);                                  // PCM (uncompressed)
-        setUint16(numOfChan);
-        setUint32(abuffer.sampleRate);
-        setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
-        setUint16(numOfChan * 2);                      // block-align
-        setUint16(16);                                 // 16-bit
-        setUint32(0x61746164);                         // "data" - chunk
-        setUint32(length - pos - 4);                   // chunk length
+        function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+        function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
 
-        for(i = 0; i < abuffer.numberOfChannels; i++)
-            channels.push(abuffer.getChannelData(i));
+        setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+        setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+        setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+        setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164);
+        setUint32(length - pos - 4);
 
+        for(i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
         while(pos < length) {
-            for(i = 0; i < numOfChan; i++) {           // interleave channels
+            for(i = 0; i < numOfChan; i++) {
                 sample = Math.max(-1, Math.min(1, channels[i][offset]));
                 sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
-                view.setInt16(pos, sample, true);      // write 16-bit sample
+                view.setInt16(pos, sample, true);
                 pos += 2;
             }
             offset++;
         }
-
         return new Blob([buffer], {type: "audio/wav"});
-
-        function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
-        function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
     }
 </script>
 
