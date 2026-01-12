@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Hashtag Generator</title>
+    <style>
+        /* Modern Design Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 { color: #333; text-align: center; }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .generate-btn { background-color: #007bff; color: white; }
+        .generate-btn:hover { background-color: #0056b3; }
+        .copy-btn { background-color: #28a745; color: white; display: none; }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            min-height: 50px;
+            word-wrap: break-word;
+            display: none;
+        }
+        .tag { color: #007bff; font-weight: 500; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2># Hashtag Generator</h2>
+    <p>Apne keywords comma (,) lagakar likhein:</p>
+    <textarea id="inputKeywords" placeholder="Example: fitness, health, gym, motivation"></textarea>
+    
+    <button class="generate-btn" onclick="generateHashtags()">Generate Hashtags</button>
+    
+    <div id="resultBox" class="result-area"></div>
+    
+    <button id="copyBtn" class="copy-btn" onclick="copyToClipboard()">Copy All Hashtags</button>
+</div>
+
+<script>
+    function generateHashtags() {
+        const input = document.getElementById('inputKeywords').value;
+        const resultBox = document.getElementById('resultBox');
+        const copyBtn = document.getElementById('copyBtn');
+        
+        if (input.trim() === "") {
+            alert("Please enter some keywords!");
+            return;
+        }
+
+        // Keywords ko split karke hashtags mein convert karna
+        const keywords = input.split(',');
+        const hashtags = keywords.map(word => {
+            let cleanWord = word.trim().replace(/\s+/g, ''); // spaces hatane ke liye
+            return cleanWord ? `#${cleanWord}` : '';
+        }).filter(tag => tag !== '');
+
+        // Result display karna
+        if (hashtags.length > 0) {
+            resultBox.innerHTML = hashtags.join(' ');
+            resultBox.style.display = "block";
+            copyBtn.style.display = "block";
+        }
+    }
+
+    function copyToClipboard() {
+        const text = document.getElementById('resultBox').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Hashtags copied to clipboard!");
+        });
+    }
+</script>
+
+</body>
+</html>
