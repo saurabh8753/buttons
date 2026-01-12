@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video to Audio Converter</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        input { margin: 20px 0; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        button:disabled { background-color: #ccc; }
+        #status { margin-top: 15px; color: #555; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Video to Audio Converter</h2>
+    <p>Apni video file select karein:</p>
+    <input type="file" id="videoInput" accept="video/*">
+    <br>
+    <button id="convertBtn">Convert to Audio (WAV)</button>
+    <div id="status"></div>
+    <div id="downloadLink"></div>
+</div>
+
+<script>
+    const videoInput = document.getElementById('videoInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const status = document.getElementById('status');
+    const downloadLink = document.getElementById('downloadLink');
+
+    convertBtn.addEventListener('click', async () => {
+        const file = videoInput.files[0];
+        if (!file) {
+            alert("Kripya pehle ek video file select karein!");
+            return;
+        }
+
+        status.innerText = "Processing... Intezar karein.";
+        convertBtn.disabled = true;
+
+        const reader = new FileReader();
+        reader.onload = async function() {
+            try {
+                const arrayBuffer = reader.result;
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Video se audio data decode karna
+                const decodedData = await audioCtx.decodeAudioData(arrayBuffer);
+                
+                // Audio ko WAV format mein convert karna
+                const wavBlob = bufferToWave(decodedData, decodedData.length);
+                const url = URL.createObjectURL(wavBlob);
+
+                // Download link dikhana
+                downloadLink.innerHTML = `<br><a href="${url}" download="converted_audio.wav">Audio Download Karein</a>`;
+                status.innerText = "Conversion Safal raha!";
+            } catch (error) {
+                status.innerText = "Error: Video process nahi ho saki.";
+                console.error(error);
+            }
+            convertBtn.disabled = false;
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+
+    // Helper function: AudioBuffer ko WAV format mein badalne ke liye
+    function bufferToWave(abuffer, len) {
+        let numOfChan = abuffer.numberOfChannels,
+            length = len * numOfChan * 2 + 44,
+            buffer = new ArrayBuffer(length),
+            view = new DataView(buffer),
+            channels = [], i, sample,
+            offset = 0,
+            pos = 0;
+
+        // WAV Header likhna
+        setUint32(0x46464952);                         // "RIFF"
+        setUint32(length - 8);                         // file length - 8
+        setUint32(0x45564157);                         // "WAVE"
+        setUint32(0x20746d66);                         // "fmt " chunk
+        setUint32(16);                                 // length = 16
+        setUint16(1);                                  // PCM (uncompressed)
+        setUint16(numOfChan);
+        setUint32(abuffer.sampleRate);
+        setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
+        setUint16(numOfChan * 2);                      // block-align
+        setUint16(16);                                 // 16-bit
+        setUint32(0x61746164);                         // "data" - chunk
+        setUint32(length - pos - 4);                   // chunk length
+
+        for(i = 0; i < abuffer.numberOfChannels; i++)
+            channels.push(abuffer.getChannelData(i));
+
+        while(pos < length) {
+            for(i = 0; i < numOfChan; i++) {           // interleave channels
+                sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+                view.setInt16(pos, sample, true);      // write 16-bit sample
+                pos += 2;
+            }
+            offset++;
+        }
+
+        return new Blob([buffer], {type: "audio/wav"});
+
+        function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+        function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+    }
+</script>
+
+</body>
+</html>
