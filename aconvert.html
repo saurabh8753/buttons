@@ -153,7 +153,7 @@
 <body>
 
 <div class="container">
-    <h2>Video to Audio</h2>
+    <h2>Video to Audio Converter</h2>
     <p>Apni video ko high-quality MP3/WAV mein badlein</p>
     
     <label for="videoInput" class="upload-area" id="dropZone">
@@ -164,7 +164,7 @@
 
     <button id="convertBtn" class="btn">
         <div class="spinner" id="loader"></div>
-        <span id="btnText">Convert Karein</span>
+        <span id="btnText">Convert Now</span>
     </button>
 
     <div id="status"></div>
@@ -222,7 +222,7 @@
                 console.error(error);
             }
             loader.style.display = "none";
-            btnText.innerText = "Convert Karein";
+            btnText.innerText = "Convert Now";
             convertBtn.disabled = false;
         };
         reader.readAsArrayBuffer(file);
@@ -257,6 +257,12 @@
         return new Blob([buffer], {type: "audio/wav"});
     }
 </script>
-
+<!-- ✅ AD AT BOTTOM OF BODY -->
+<div class="bottom-ad">
+  <script async data-cfasync="false"
+    src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/invoke.js">
+  </script>
+  <div id="container-e1b6987953b44b06af771c434831e631"></div>
+</div>
 </body>
 </html>
