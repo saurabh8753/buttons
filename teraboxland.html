@@ -20,19 +20,29 @@ body{
   margin:0;
   min-height:100vh;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
   background:linear-gradient(180deg,#eef2ff,#f9fafb);
   font-family:system-ui,-apple-system,Segoe UI,Roboto;
   color:var(--text);
+  padding:20px 12px 140px;
 }
 
+/* Trust header */
+.trust{
+  font-size:12px;
+  color:#6b7280;
+  margin-bottom:12px;
+}
+
+/* Main card */
 .card{
   width:100%;
   max-width:380px;
   background:var(--card);
   border-radius:18px;
-  padding:28px;
+  padding:26px;
   box-shadow:
     0 10px 30px rgba(0,0,0,.08),
     0 1px 3px rgba(0,0,0,.05);
@@ -56,15 +66,14 @@ h2{
 }
 
 p{
-  margin:0 0 22px;
+  margin:0 0 20px;
   color:var(--muted);
   font-size:14px;
-  line-height:1.5;
 }
 
 .btn{
   width:100%;
-  padding:14px 16px;
+  padding:14px;
   border:none;
   border-radius:12px;
   background:linear-gradient(135deg,#2481cc,#1a5fa0);
@@ -72,7 +81,7 @@ p{
   font-size:16px;
   font-weight:600;
   cursor:pointer;
-  transition:.2s ease;
+  transition:.2s;
 }
 
 .btn:hover{
@@ -80,29 +89,53 @@ p{
   box-shadow:0 8px 20px rgba(36,129,204,.35);
 }
 
-.footer{
-  margin-top:18px;
-  font-size:12px;
-  color:#9ca3af;
+/* Inline ad zone */
+.inline-ad{
+  margin-top:16px;
+  padding:6px;
+  background:#f9fafb;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+}
+
+/* Sticky bottom ad */
+.bottom-ad{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#fff;
+  text-align:center;
+  padding:6px 0;
+  box-shadow:0 -3px 10px rgba(0,0,0,.08);
+  z-index:999;
 }
 </style>
 </head>
 
 <body>
 
+<div class="trust">🔒 Secure Download • No Signup Required</div>
+
 <div class="card">
+
   <div class="badge">TeraPlayDown</div>
 
   <h2>Download Ready</h2>
-  <p>Your video is ready. Click below to open the download page.</p>
+  <p>Your video is prepared. Tap below to continue.</p>
 
   <button class="btn" onclick="openLinks()">
     Open Download Page
   </button>
 
-  <div class="footer">
-    Secure • Fast • No Signup
+  <!-- Inline Ad -->
+  <div class="inline-ad">
+    <script async data-cfasync="false"
+      src="https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js">
+    </script>
+    <div id="container-e1b6987953b44b06af771c434831e631"></div>
   </div>
+
 </div>
 
 <script>
@@ -115,26 +148,27 @@ function openLinks(){
     return;
   }
 
-  // 🎬 Video page (NEW TAB)
   const playUrl =
     "https://videoplay-2ym.pages.dev/?url=" +
     encodeURIComponent(teraboxLink);
 
-  // 💰 Smart link (REPLACE CURRENT PAGE)
   const smartLink =
-    "https://yawncollaremotion.com/yvc33vhcr?key=392e8fc7e7a5aa8ee592724f8804ce9a";
+    "https://www.effectivegatecpm.com/hamfxc0cre?key=98b8b86d55734c2055e254a6a0e2c5d8";
 
-  // 1️⃣ Open video page in NEW TAB
   const videoTab = window.open(playUrl, "_blank");
-  if(videoTab){
-    videoTab.focus();
-  }
+  if(videoTab) videoTab.focus();
 
-  // 2️⃣ Replace current page with smart link
   window.location.replace(smartLink);
 }
 </script>
-<script async="async" data-cfasync="false" src="https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js"></script>
-<div id="container-e1b6987953b44b06af771c434831e631"></div>
+
+<!-- Sticky bottom ad -->
+<div class="bottom-ad">
+  <script async data-cfasync="false"
+    src="https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js">
+  </script>
+  <div id="container-e1b6987953b44b06af771c434831e631"></div>
+</div>
+
 </body>
 </html>
