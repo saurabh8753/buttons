@@ -8,10 +8,6 @@
 <style>
 :root{
   --primary:#2481cc;
-  --bg:#f4f6fb;
-  --card:#ffffff;
-  --text:#1f2937;
-  --muted:#6b7280;
 }
 
 *{box-sizing:border-box}
@@ -20,19 +16,17 @@ body{
   margin:0;
   min-height:100vh;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(180deg,#eef2ff,#f9fafb);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  color:var(--text);
-  padding:20px 12px 140px;
+  background:#f4f6fb;
+  font-family:system-ui,Segoe UI;
+  padding-bottom:120px;
 }
 
 .card{
   width:100%;
   max-width:380px;
-  background:var(--card);
+  background:#fff;
   border-radius:18px;
   padding:26px;
   box-shadow:0 10px 30px rgba(0,0,0,.08);
@@ -51,18 +45,19 @@ body{
   cursor:pointer;
 }
 
-/* Bottom ad hidden container */
+/* Bottom ad safe container */
 .bottom-ad{
   position:fixed;
   bottom:0;
   left:0;
   width:100%;
+  height:90px; /* lock height */
   background:#fff;
   text-align:center;
-  padding:6px 0;
   box-shadow:0 -3px 10px rgba(0,0,0,.08);
   z-index:999;
   display:none;
+  overflow:hidden;
 }
 </style>
 </head>
@@ -101,24 +96,32 @@ function openLinks(){
   }, 60000);
 }
 
-/* ✅ Inject bottom ad after 10 seconds */
+/* ✅ Safe delayed ad load */
 setTimeout(() => {
+
   const adBox = document.querySelector(".bottom-ad");
   adBox.style.display = "block";
 
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = "https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js";
-  adBox.appendChild(script);
+  // sandbox iframe to prevent layout break
+  const iframe = document.createElement("iframe");
+  iframe.style.border = "0";
+  iframe.style.width = "100%";
+  iframe.style.height = "90px";
+  iframe.sandbox = "allow-scripts allow-same-origin";
 
-  const container = document.createElement("div");
-  container.id = "container-e1b6987953b44b06af771c434831e631";
-  adBox.appendChild(container);
+  adBox.appendChild(iframe);
+
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(`
+    <script async src="https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js"><\/script>
+    <div id="container-e1b6987953b44b06af771c434831e631"></div>
+  `);
+  doc.close();
 
 }, 10000);
 </script>
 
-<!-- Bottom ad container (empty initially) -->
 <div class="bottom-ad"></div>
 
 </body>
