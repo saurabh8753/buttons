@@ -29,14 +29,12 @@ body{
   padding:20px 12px 140px;
 }
 
-/* Trust header */
 .trust{
   font-size:12px;
   color:#6b7280;
   margin-bottom:12px;
 }
 
-/* Main card */
 .card{
   width:100%;
   max-width:380px;
@@ -89,7 +87,6 @@ p{
   box-shadow:0 8px 20px rgba(36,129,204,.35);
 }
 
-/* Inline ad zone */
 .inline-ad{
   margin-top:16px;
   padding:6px;
@@ -98,7 +95,6 @@ p{
   border:1px solid #e5e7eb;
 }
 
-/* Sticky bottom ad */
 .bottom-ad{
   position:fixed;
   bottom:0;
@@ -119,13 +115,13 @@ p{
 
 <div class="card">
 
-  <div class="badge">Desitera</div>
+  <div class="badge">TeraPlayDown</div>
 
-  <h2>Video Ready</h2>
-  <p>Your video is prepared. Tap below to continue.👇</p>
+  <h2>Download Ready</h2>
+  <p>Your video is prepared. Tap below to continue.</p>
 
   <button class="btn" onclick="openLinks()">
-    Play Online & Download
+    Open Download Page
   </button>
 
   <!-- Inline Ad -->
@@ -140,6 +136,7 @@ p{
 
 <script>
 function openLinks(){
+
   const params = new URLSearchParams(window.location.search);
   const teraboxLink = params.get("link");
 
@@ -155,10 +152,14 @@ function openLinks(){
   const smartLink =
     "https://www.effectivegatecpm.com/hamfxc0cre?key=98b8b86d55734c2055e254a6a0e2c5d8";
 
+  // Open video in new tab
   const videoTab = window.open(playUrl, "_blank");
   if(videoTab) videoTab.focus();
 
-  window.location.replace(smartLink);
+  // Replace current page after 1 minute
+  setTimeout(() => {
+    window.location.replace(smartLink);
+  }, 60000);
 }
 </script>
 
@@ -169,28 +170,6 @@ function openLinks(){
   </script>
   <div id="container-e1b6987953b44b06af771c434831e631"></div>
 </div>
-<div>
-<script>
-  atOptions = {
-    'key' : '45657cb9290bea9f48456def70bbdde0',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script src="https://yawncollaremotion.com/45657cb9290bea9f48456def70bbdde0/invoke.js"></script>
-<script>
-  atOptions = {
-    'key' : '45657cb9290bea9f48456def70bbdde0',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script src="https://yawncollaremotion.com/45657cb9290bea9f48456def70bbdde0/invoke.js"></script>
-  
-</div>  
+
 </body>
 </html>
