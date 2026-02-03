@@ -20,7 +20,6 @@ body{
   justify-content:center;
   background:#f4f6fb;
   font-family:system-ui,Segoe UI;
-  padding-bottom:120px;
 }
 
 .card{
@@ -45,19 +44,17 @@ body{
   cursor:pointer;
 }
 
-/* Bottom ad safe container */
-.bottom-ad{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:90px; /* lock height */
-  background:#fff;
-  text-align:center;
-  box-shadow:0 -3px 10px rgba(0,0,0,.08);
-  z-index:999;
-  display:none;
+/* Ad container inside card */
+.inline-ad{
+  margin-top:16px;
+  height:90px;
+  border:1px solid #eee;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   overflow:hidden;
+  background:#fafafa;
 }
 </style>
 </head>
@@ -67,7 +64,15 @@ body{
 <div class="card">
   <h2>Download Ready</h2>
   <p>Click below to continue</p>
-  <button class="btn" onclick="openLinks()">Open Download Page</button>
+
+  <button class="btn" onclick="openLinks()">
+    Open Download Page
+  </button>
+
+  <!-- Ad area -->
+  <div class="inline-ad" id="adBox">
+    Loading ad...
+  </div>
 </div>
 
 <script>
@@ -96,13 +101,12 @@ function openLinks(){
   }, 60000);
 }
 
-/* ✅ Safe delayed ad load */
+/* ✅ Load ad after 10 seconds safely */
 setTimeout(() => {
 
-  const adBox = document.querySelector(".bottom-ad");
-  adBox.style.display = "block";
+  const adBox = document.getElementById("adBox");
+  adBox.innerHTML = "";
 
-  // sandbox iframe to prevent layout break
   const iframe = document.createElement("iframe");
   iframe.style.border = "0";
   iframe.style.width = "100%";
@@ -121,8 +125,6 @@ setTimeout(() => {
 
 }, 10000);
 </script>
-
-<div class="bottom-ad"></div>
 
 </body>
 </html>
