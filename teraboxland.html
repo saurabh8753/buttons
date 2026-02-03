@@ -20,11 +20,12 @@ body{
   justify-content:center;
   background:#f4f6fb;
   font-family:system-ui,Segoe UI;
+  padding:16px;
 }
 
 .card{
   width:100%;
-  max-width:380px;
+  max-width:420px;
   background:#fff;
   border-radius:18px;
   padding:26px;
@@ -44,10 +45,11 @@ body{
   cursor:pointer;
 }
 
-/* Ad container inside card */
+/* Responsive ad container */
 .inline-ad{
   margin-top:16px;
-  height:90px;
+  width:100%;
+  min-height:90px;
   border:1px solid #eee;
   border-radius:10px;
   display:flex;
@@ -55,6 +57,14 @@ body{
   justify-content:center;
   overflow:hidden;
   background:#fafafa;
+  padding:4px;
+}
+
+.inline-ad iframe{
+  width:100%;
+  height:100%;
+  min-height:90px;
+  border:0;
 }
 </style>
 </head>
@@ -69,7 +79,7 @@ body{
     Open Download Page
   </button>
 
-  <!-- Ad area -->
+  <!-- Responsive ad -->
   <div class="inline-ad" id="adBox">
     Loading ad...
   </div>
@@ -101,16 +111,13 @@ function openLinks(){
   }, 60000);
 }
 
-/* ✅ Load ad after 10 seconds safely */
+/* Load ad after 10 seconds */
 setTimeout(() => {
 
   const adBox = document.getElementById("adBox");
   adBox.innerHTML = "";
 
   const iframe = document.createElement("iframe");
-  iframe.style.border = "0";
-  iframe.style.width = "100%";
-  iframe.style.height = "90px";
   iframe.sandbox = "allow-scripts allow-same-origin";
 
   adBox.appendChild(iframe);
@@ -118,6 +125,7 @@ setTimeout(() => {
   const doc = iframe.contentWindow.document;
   doc.open();
   doc.write(`
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script async src="https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js"><\/script>
     <div id="container-e1b6987953b44b06af771c434831e631"></div>
   `);
