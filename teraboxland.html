@@ -47,7 +47,7 @@ body{
   cursor:pointer;
 }
 
-/* Ad section full width */
+/* Ad under card */
 .ad-section{
   width:100%;
   max-width:420px;
@@ -57,7 +57,18 @@ body{
   background:#fff;
 }
 
-.ad-section iframe{
+/* Body ad bottom */
+.body-ad{
+  width:100%;
+  max-width:420px;
+  margin-top:16px;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+}
+
+.ad-section iframe,
+.body-ad iframe{
   width:100%;
   border:0;
   display:block;
@@ -76,8 +87,11 @@ body{
   </button>
 </div>
 
-<!-- Ad container (empty initially) -->
-<div class="ad-section" id="adBox"></div>
+<!-- Ad under card -->
+<div class="ad-section" id="adBox1"></div>
+
+<!-- Body ad -->
+<div class="body-ad" id="adBox2"></div>
 
 <script>
 function openLinks(){
@@ -105,16 +119,15 @@ function openLinks(){
   }, 60000);
 }
 
-/* Load ad after 10 seconds */
-setTimeout(() => {
-
-  const adBox = document.getElementById("adBox");
+/* function to inject ad safely */
+function loadAd(containerId){
+  const box = document.getElementById(containerId);
 
   const iframe = document.createElement("iframe");
   iframe.sandbox = "allow-scripts allow-same-origin";
-  iframe.style.minHeight = "100px"; // allow full banner height
+  iframe.style.minHeight = "100px";
 
-  adBox.appendChild(iframe);
+  box.appendChild(iframe);
 
   const doc = iframe.contentWindow.document;
   doc.open();
@@ -124,7 +137,12 @@ setTimeout(() => {
     <div id="container-e1b6987953b44b06af771c434831e631"></div>
   `);
   doc.close();
+}
 
+/* Load both ads after 10 sec */
+setTimeout(() => {
+  loadAd("adBox1");
+  loadAd("adBox2");
 }, 10000);
 </script>
 
