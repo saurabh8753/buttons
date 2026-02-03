@@ -16,6 +16,7 @@ body{
   margin:0;
   min-height:100vh;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
   background:#f4f6fb;
@@ -23,6 +24,7 @@ body{
   padding:16px;
 }
 
+/* Main card */
 .card{
   width:100%;
   max-width:420px;
@@ -45,22 +47,23 @@ body{
   cursor:pointer;
 }
 
-/* Responsive ad container */
-.inline-ad{
-  margin-top:16px;
+/* Separate ad container */
+.ad-section{
   width:100%;
+  max-width:420px;
+  margin-top:16px;
   min-height:90px;
+  border-radius:12px;
   border:1px solid #eee;
-  border-radius:10px;
+  background:#fafafa;
   display:flex;
   align-items:center;
   justify-content:center;
   overflow:hidden;
-  background:#fafafa;
-  padding:4px;
+  padding:6px;
 }
 
-.inline-ad iframe{
+.ad-section iframe{
   width:100%;
   height:100%;
   min-height:90px;
@@ -78,11 +81,11 @@ body{
   <button class="btn" onclick="openLinks()">
     Open Download Page
   </button>
+</div>
 
-  <!-- Responsive ad -->
-  <div class="inline-ad" id="adBox">
-    Loading ad...
-  </div>
+<!-- Separate Ad Container -->
+<div class="ad-section" id="adBox">
+  Loading ad...
 </div>
 
 <script>
@@ -119,7 +122,6 @@ setTimeout(() => {
 
   const iframe = document.createElement("iframe");
   iframe.sandbox = "allow-scripts allow-same-origin";
-
   adBox.appendChild(iframe);
 
   const doc = iframe.contentWindow.document;
