@@ -29,44 +29,14 @@ body{
   padding:20px 12px 140px;
 }
 
-.trust{
-  font-size:12px;
-  color:#6b7280;
-  margin-bottom:12px;
-}
-
 .card{
   width:100%;
   max-width:380px;
   background:var(--card);
   border-radius:18px;
   padding:26px;
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.08),
-    0 1px 3px rgba(0,0,0,.05);
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
   text-align:center;
-}
-
-.badge{
-  display:inline-block;
-  padding:6px 12px;
-  border-radius:999px;
-  background:#e8f1fb;
-  color:var(--primary);
-  font-weight:600;
-  font-size:13px;
-  margin-bottom:14px;
-}
-
-h2{
-  margin:0 0 8px;
-  font-size:22px;
-}
-
-p{
-  margin:0 0 20px;
-  color:var(--muted);
-  font-size:14px;
 }
 
 .btn{
@@ -79,18 +49,9 @@ p{
   font-size:16px;
   font-weight:600;
   cursor:pointer;
-  transition:.2s;
 }
 
-.inline-ad{
-  margin-top:16px;
-  padding:6px;
-  background:#f9fafb;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
-}
-
-/* Bottom ad hidden initially */
+/* Bottom ad hidden container */
 .bottom-ad{
   position:fixed;
   bottom:0;
@@ -108,27 +69,10 @@ p{
 
 <body>
 
-<div class="trust">🔒 Secure Download • No Signup Required</div>
-
 <div class="card">
-
-  <div class="badge">TeraPlayDown</div>
-
   <h2>Download Ready</h2>
-  <p>Your video is prepared. Tap below to continue.</p>
-
-  <button class="btn" onclick="openLinks()">
-    Open Download Page
-  </button>
-
-  <!-- Inline Ad -->
-  <div class="inline-ad">
-    <script async data-cfasync="false"
-      src="https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js">
-    </script>
-    <div id="container-e1b6987953b44b06af771c434831e631"></div>
-  </div>
-
+  <p>Click below to continue</p>
+  <button class="btn" onclick="openLinks()">Open Download Page</button>
 </div>
 
 <script>
@@ -157,20 +101,25 @@ function openLinks(){
   }, 60000);
 }
 
-/* ✅ Load bottom ad after 10 seconds */
+/* ✅ Inject bottom ad after 10 seconds */
 setTimeout(() => {
-  const ad = document.querySelector(".bottom-ad");
-  ad.style.display = "block";
+  const adBox = document.querySelector(".bottom-ad");
+  adBox.style.display = "block";
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = "https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js";
+  adBox.appendChild(script);
+
+  const container = document.createElement("div");
+  container.id = "container-e1b6987953b44b06af771c434831e631";
+  adBox.appendChild(container);
+
 }, 10000);
 </script>
 
-<!-- Bottom Ad -->
-<div class="bottom-ad">
-  <script async data-cfasync="false"
-    src="https://yawncollaremotion.com/e1b6987953b44b06af771c434831e631/invoke.js">
-  </script>
-  <div id="container-e1b6987953b44b06af771c434831e631"></div>
-</div>
+<!-- Bottom ad container (empty initially) -->
+<div class="bottom-ad"></div>
 
 </body>
 </html>
