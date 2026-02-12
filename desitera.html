@@ -2,57 +2,75 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DesiTera Glass UI</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>DesiTera App</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
 body{
-  margin:0;
   height:100vh;
-  background:linear-gradient(135deg,#0f172a,#1e3a8a,#2481cc);
+  background:linear-gradient(160deg,#0f172a,#1e3a8a,#2481cc);
+  font-family:'Segoe UI',sans-serif;
+  color:#fff;
   display:flex;
   flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  font-family:'Segoe UI',sans-serif;
   overflow:hidden;
 }
 
-/* Glass card */
-.glass-card{
-  backdrop-filter:blur(18px);
-  background:rgba(255,255,255,0.12);
-  border:1px solid rgba(255,255,255,0.25);
-  border-radius:25px;
-  padding:40px;
-  width:90%;
-  max-width:500px;
-  color:#fff;
+/* Fake mobile status bar */
+.status-bar{
+  height:28px;
+  background:rgba(0,0,0,0.25);
+  backdrop-filter:blur(10px);
+}
+
+/* App header */
+.header{
   text-align:center;
-  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  padding:15px;
+  font-weight:700;
+  font-size:20px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+}
+
+/* Main app area */
+.app{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
   animation:fadeIn 1s ease;
 }
 
 @keyframes fadeIn{
-  from{opacity:0;transform:translateY(20px);}
+  from{opacity:0;transform:translateY(30px);}
   to{opacity:1;transform:translateY(0);}
 }
 
-.title{
-  font-size:28px;
-  font-weight:700;
-  margin-bottom:5px;
+/* Glass card */
+.card{
+  width:100%;
+  max-width:420px;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(20px);
+  border-radius:25px;
+  padding:30px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  text-align:center;
 }
 
 .subtitle{
   opacity:0.85;
-  margin-bottom:25px;
+  margin-bottom:20px;
 }
 
-/* Input glass */
-.glass-input{
+/* Input */
+.input{
   width:100%;
   padding:15px;
   border-radius:15px;
@@ -60,17 +78,16 @@ body{
   outline:none;
   background:rgba(255,255,255,0.15);
   color:#fff;
-  font-size:16px;
   margin-bottom:15px;
-  backdrop-filter:blur(10px);
+  font-size:16px;
 }
 
-.glass-input::placeholder{
+.input::placeholder{
   color:rgba(255,255,255,0.7);
 }
 
 /* Button */
-.glass-btn{
+.btn{
   width:100%;
   padding:15px;
   border-radius:15px;
@@ -82,64 +99,59 @@ body{
   transition:0.3s;
 }
 
-.glass-btn:hover{
-  transform:scale(1.03);
-  box-shadow:0 0 20px rgba(96,165,250,0.6);
+.btn:active{
+  transform:scale(0.96);
 }
 
 /* Loading */
 .loading{
   display:none;
-  margin-top:15px;
+  margin-top:12px;
   opacity:0.9;
 }
 
-/* Sticky ad */
-.bottom-ad{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  text-align:center;
-  background:rgba(0,0,0,0.4);
+/* Bottom nav style ad area */
+.bottom-bar{
+  height:70px;
+  background:rgba(0,0,0,0.35);
   backdrop-filter:blur(10px);
-  padding:5px;
-  z-index:9999;
-}
-
-footer{
-  position:fixed;
-  bottom:60px;
-  color:#ddd;
-  font-size:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 -5px 20px rgba(0,0,0,0.4);
 }
 </style>
 </head>
 
 <body>
 
-<div class="glass-card">
+<div class="status-bar"></div>
 
-  <div class="title">DesiTera</div>
-  <div class="subtitle">Fastest Terabox Player</div>
+<div class="header">
+DesiTera Player
+</div>
 
-  <input type="text"
-    id="userInput"
-    class="glass-input"
-    placeholder="Paste Terabox link...">
+<div class="app">
 
-  <button onclick="generateLink()" class="glass-btn">
-    Continue
-  </button>
+  <div class="card">
+    <div class="subtitle">
+      Paste your Terabox link 👇
+    </div>
 
-  <div class="loading" id="loading">
-    ⚡ Processing...
+    <input id="userInput"
+      class="input"
+      placeholder="Paste link here...">
+
+    <button onclick="generateLink()" class="btn">
+      Continue
+    </button>
+
+    <div id="loading" class="loading">
+      ⚡ Processing...
+    </div>
   </div>
 
 </div>
-
-<footer>
-© 2026 DesiTera | Secure Glass UI
-</footer>
 
 <script>
 function cleanLink(link){
@@ -147,7 +159,9 @@ function cleanLink(link){
 }
 
 function generateLink(){
-  let userLink = cleanLink(document.getElementById("userInput").value);
+  let userLink = cleanLink(
+    document.getElementById("userInput").value
+  );
 
   if(
     userLink.includes("terabox") ||
@@ -171,8 +185,8 @@ function generateLink(){
 }
 </script>
 
-<!-- 🔥 Sticky High CPM Ad -->
-<div class="bottom-ad">
+<!-- 🔥 High CPM Bottom Ad -->
+<div class="bottom-bar">
 <script async data-cfasync="false"
 src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/invoke.js"></script>
 <div id="container-e1b6987953b44b06af771c434831e631"></div>
