@@ -3,126 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DesiTera - Pro Player</title>
+<title>DesiTera Glass UI</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 body{
-  background:#f4f6f9;
+  margin:0;
+  height:100vh;
+  background:linear-gradient(135deg,#0f172a,#1e3a8a,#2481cc);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
   font-family:'Segoe UI',sans-serif;
+  overflow:hidden;
 }
 
-.hero{
-  background:linear-gradient(135deg,#2481cc,#0056b3);
+/* Glass card */
+.glass-card{
+  backdrop-filter:blur(18px);
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:25px;
+  padding:40px;
+  width:90%;
+  max-width:500px;
   color:#fff;
-  padding:60px 0;
-  border-radius:0 0 50px 50px;
   text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  animation:fadeIn 1s ease;
 }
 
-.card-main{
-  border:none;
-  border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-  margin-top:-40px;
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
-.input-group input{
-  border-radius:15px 0 0 15px !important;
-  font-size:18px;
+.title{
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:5px;
 }
 
-.paste-btn{
-  border-radius:0 15px 15px 0;
+.subtitle{
+  opacity:0.85;
+  margin-bottom:25px;
 }
 
-.btn-pro{
+/* Input glass */
+.glass-input{
+  width:100%;
+  padding:15px;
   border-radius:15px;
-  background:#2481cc;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,0.15);
+  color:#fff;
+  font-size:16px;
+  margin-bottom:15px;
+  backdrop-filter:blur(10px);
+}
+
+.glass-input::placeholder{
+  color:rgba(255,255,255,0.7);
+}
+
+/* Button */
+.glass-btn{
+  width:100%;
+  padding:15px;
+  border-radius:15px;
+  border:none;
   font-size:18px;
+  font-weight:600;
+  color:#fff;
+  background:linear-gradient(135deg,#2481cc,#60a5fa);
+  transition:0.3s;
 }
 
-.btn-pro:hover{
-  background:#0d6efd;
+.glass-btn:hover{
+  transform:scale(1.03);
+  box-shadow:0 0 20px rgba(96,165,250,0.6);
 }
 
+/* Loading */
 .loading{
   display:none;
   margin-top:15px;
+  opacity:0.9;
 }
 
-.bottom-sticky-ad{
+/* Sticky ad */
+.bottom-ad{
   position:fixed;
   bottom:0;
   width:100%;
-  background:#fff;
   text-align:center;
-  box-shadow:0 -3px 10px rgba(0,0,0,0.1);
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
   padding:5px;
   z-index:9999;
 }
 
 footer{
-  margin-top:80px;
-  text-align:center;
-  color:#777;
-  font-size:0.9rem;
+  position:fixed;
+  bottom:60px;
+  color:#ddd;
+  font-size:12px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="hero">
-  <h1>DesiTera</h1>
-  <p>Fastest Terabox Video Player & Downloader</p>
-</div>
+<div class="glass-card">
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card card-main p-4 p-md-5">
+  <div class="title">DesiTera</div>
+  <div class="subtitle">Fastest Terabox Player</div>
 
-        <label class="h5 text-center mb-3">⚡ Paste your link 👇</label>
+  <input type="text"
+    id="userInput"
+    class="glass-input"
+    placeholder="Paste Terabox link...">
 
-        <div class="input-group mb-3">
-          <input type="text" id="userInput"
-            class="form-control form-control-lg"
-            placeholder="Paste Terabox link...">
+  <button onclick="generateLink()" class="glass-btn">
+    Continue
+  </button>
 
-          <button class="btn btn-secondary paste-btn" onclick="pasteText()">
-            Paste
-          </button>
-        </div>
-
-        <button onclick="generateLink()"
-          class="btn btn-primary btn-lg w-100 btn-pro">
-          Continue
-        </button>
-
-        <div class="loading text-center" id="loading">
-          🔄 Processing link...
-        </div>
-
-      </div>
-    </div>
+  <div class="loading" id="loading">
+    ⚡ Processing...
   </div>
+
 </div>
 
 <footer>
-  © 2026 DesiTera | Secure & Fast
+© 2026 DesiTera | Secure Glass UI
 </footer>
 
 <script>
 function cleanLink(link){
   return link.split(" ")[0].trim();
-}
-
-function pasteText(){
-  navigator.clipboard.readText().then(text=>{
-    document.getElementById("userInput").value = cleanLink(text);
-  });
 }
 
 function generateLink(){
@@ -142,16 +163,16 @@ function generateLink(){
     setTimeout(()=>{
       window.open(targetUrl,"_blank");
       document.getElementById("loading").style.display="none";
-    },1200);
+    },1000);
 
   }else{
-    alert("Please enter a valid Terabox link!");
+    alert("Enter valid Terabox link!");
   }
 }
 </script>
 
-<!-- 🔥 HIGH CPM STICKY AD -->
-<div class="bottom-sticky-ad">
+<!-- 🔥 Sticky High CPM Ad -->
+<div class="bottom-ad">
 <script async data-cfasync="false"
 src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/invoke.js"></script>
 <div id="container-e1b6987953b44b06af771c434831e631"></div>
