@@ -54,7 +54,7 @@ body{
   text-align:center;
 }
 
-/* Input wrapper */
+/* Snapinsta style input */
 .input-wrap{
   position:relative;
   margin-bottom:15px;
@@ -62,26 +62,38 @@ body{
 
 .input{
   width:100%;
-  padding:15px 50px 15px 15px;
-  border-radius:15px;
-  border:none;
+  padding:15px 110px 15px 15px;
+  border-radius:18px;
+  border:2px solid rgba(255,255,255,0.4);
   outline:none;
-  background:rgba(255,255,255,0.15);
-  color:#fff;
+  background:rgba(255,255,255,0.95);
+  color:#000;
   font-size:16px;
 }
 
-.icon-btn{
+.clip-btn{
   position:absolute;
-  right:10px;
+  right:6px;
   top:50%;
   transform:translateY(-50%);
-  font-size:22px;
+  background:#e9c6ea;
+  color:#000;
+  border-radius:14px;
+  padding:8px 14px;
+  font-size:14px;
   cursor:pointer;
-  opacity:0.9;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-weight:600;
+  transition:0.2s;
 }
 
-/* Button */
+.clip-btn:hover{
+  transform:translateY(-50%) scale(1.05);
+}
+
+/* Continue button */
 .btn{
   width:100%;
   padding:15px;
@@ -98,7 +110,7 @@ body{
   margin-top:10px;
 }
 
-/* High CPM bottom area */
+/* High CPM bottom bar */
 .bottom-ad{
   height:80px;
   background:rgba(0,0,0,0.35);
@@ -126,8 +138,10 @@ Paste your Terabox link 👇
   <input id="userInput" class="input"
   placeholder="Paste link here...">
 
-  <span id="clipIcon" class="icon-btn"
-  onclick="toggleClipboard()">📋</span>
+  <div id="clipBtn" class="clip-btn"
+  onclick="toggleClipboard()">
+    📋 Paste
+  </div>
 </div>
 
 <button onclick="generateLink()" class="btn">
@@ -154,21 +168,28 @@ function isValid(link){
 
 async function toggleClipboard(){
   const input = document.getElementById("userInput");
-  const icon = document.getElementById("clipIcon");
+  const btn = document.getElementById("clipBtn");
 
   if(input.value){
     input.value = "";
-    icon.textContent = "📋";
+    btn.innerHTML = "📋 Paste";
   }else{
     try{
       const text = await navigator.clipboard.readText();
       input.value = cleanLink(text);
-      icon.textContent = "❌";
+      btn.innerHTML = "✖ Clear";
     }catch{
       alert("Clipboard blocked!");
     }
   }
 }
+
+/* Auto icon switch when typing */
+document.getElementById("userInput")
+.addEventListener("input", function(){
+  const btn = document.getElementById("clipBtn");
+  btn.innerHTML = this.value ? "✖ Clear" : "📋 Paste";
+});
 
 function generateLink(){
   let userLink = cleanLink(
