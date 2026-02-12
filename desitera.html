@@ -20,14 +20,12 @@ body{
   overflow:hidden;
 }
 
-/* Fake mobile status bar */
 .status-bar{
   height:28px;
   background:rgba(0,0,0,0.25);
   backdrop-filter:blur(10px);
 }
 
-/* App header */
 .header{
   text-align:center;
   padding:15px;
@@ -37,22 +35,14 @@ body{
   backdrop-filter:blur(10px);
 }
 
-/* Main app area */
 .app{
   flex:1;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:20px;
-  animation:fadeIn 1s ease;
 }
 
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(30px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* Glass card */
 .card{
   width:100%;
   max-width:420px;
@@ -64,12 +54,6 @@ body{
   text-align:center;
 }
 
-.subtitle{
-  opacity:0.85;
-  margin-bottom:20px;
-}
-
-/* Input */
 .input{
   width:100%;
   padding:15px;
@@ -78,15 +62,10 @@ body{
   outline:none;
   background:rgba(255,255,255,0.15);
   color:#fff;
-  margin-bottom:15px;
+  margin-bottom:12px;
   font-size:16px;
 }
 
-.input::placeholder{
-  color:rgba(255,255,255,0.7);
-}
-
-/* Button */
 .btn{
   width:100%;
   padding:15px;
@@ -96,21 +75,18 @@ body{
   font-weight:600;
   color:#fff;
   background:linear-gradient(135deg,#2481cc,#60a5fa);
-  transition:0.3s;
+  margin-bottom:8px;
 }
 
-.btn:active{
-  transform:scale(0.96);
+.paste-btn{
+  background:rgba(255,255,255,0.25);
 }
 
-/* Loading */
 .loading{
   display:none;
-  margin-top:12px;
-  opacity:0.9;
+  margin-top:10px;
 }
 
-/* Bottom nav style ad area */
 .bottom-bar{
   height:70px;
   background:rgba(0,0,0,0.35);
@@ -118,7 +94,6 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 -5px 20px rgba(0,0,0,0.4);
 }
 </style>
 </head>
@@ -126,31 +101,31 @@ body{
 <body>
 
 <div class="status-bar"></div>
-
-<div class="header">
-DesiTera Player
-</div>
+<div class="header">DesiTera Player</div>
 
 <div class="app">
+<div class="card">
 
-  <div class="card">
-    <div class="subtitle">
-      Paste your Terabox link 👇
-    </div>
+<p style="opacity:0.9;margin-bottom:15px">
+Clipboard auto paste enabled ⚡
+</p>
 
-    <input id="userInput"
-      class="input"
-      placeholder="Paste link here...">
+<input id="userInput" class="input"
+placeholder="Paste Terabox link...">
 
-    <button onclick="generateLink()" class="btn">
-      Continue
-    </button>
+<button onclick="pasteClipboard()" class="btn paste-btn">
+📋 Paste from Clipboard
+</button>
 
-    <div id="loading" class="loading">
-      ⚡ Processing...
-    </div>
-  </div>
+<button onclick="generateLink()" class="btn">
+Continue
+</button>
 
+<div id="loading" class="loading">
+⚡ Processing...
+</div>
+
+</div>
 </div>
 
 <script>
@@ -158,16 +133,39 @@ function cleanLink(link){
   return link.split(" ")[0].trim();
 }
 
+function isValid(link){
+  return link.includes("terabox") ||
+         link.includes("terashare") ||
+         link.includes("nephobox");
+}
+
+// ✅ Auto clipboard read on load
+window.onload = async function(){
+  try{
+    const text = await navigator.clipboard.readText();
+    if(isValid(text)){
+      document.getElementById("userInput").value = cleanLink(text);
+    }
+  }catch(e){
+    console.log("Clipboard permission denied");
+  }
+}
+
+async function pasteClipboard(){
+  try{
+    const text = await navigator.clipboard.readText();
+    document.getElementById("userInput").value = cleanLink(text);
+  }catch{
+    alert("Clipboard access blocked!");
+  }
+}
+
 function generateLink(){
   let userLink = cleanLink(
     document.getElementById("userInput").value
   );
 
-  if(
-    userLink.includes("terabox") ||
-    userLink.includes("terashare") ||
-    userLink.includes("nephobox")
-  ){
+  if(isValid(userLink)){
     document.getElementById("loading").style.display="block";
 
     const targetUrl =
@@ -185,7 +183,7 @@ function generateLink(){
 }
 </script>
 
-<!-- 🔥 High CPM Bottom Ad -->
+<!-- 🔥 High CPM Ad -->
 <div class="bottom-bar">
 <script async data-cfasync="false"
 src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/invoke.js"></script>
