@@ -101,6 +101,7 @@ body{
   font-weight:600;
   color:#fff;
   background:linear-gradient(135deg,#2481cc,#60a5fa);
+  cursor:pointer;
 }
 
 .loading{
@@ -108,16 +109,36 @@ body{
   margin-top:10px;
 }
 
-/* 🔥 Ad container under button */
 .ad-box{
   margin-top:20px;
   background:rgba(0,0,0,0.25);
   border-radius:15px;
   padding:10px;
-  display:flex;
+  display:none;
   justify-content:center;
   align-items:center;
   overflow:hidden;
+}
+
+/* Sticky bottom ad */
+.sticky-ad{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.9);
+  padding:5px 0;
+  z-index:99999;
+}
+
+@media(max-width:768px){
+  .sticky-ad iframe{
+    width:100% !important;
+    height:auto !important;
+  }
 }
 </style>
 </head>
@@ -152,12 +173,8 @@ Continue
 ⚡ Processing...
 </div>
 
-<!-- 🔥 Ads under button -->
-<div class="ad-box">
-
-<script async data-cfasync="false"
-src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/invoke.js"></script>
-<div id="container-e1b6987953b44b06af771c434831e631"></div>
+<!-- 🔥 Ad Box (5 sec delay) -->
+<div id="adBox" class="ad-box">
 
 <script>
   atOptions = {
@@ -175,6 +192,20 @@ src="https://pl28453807.effectivegatecpm.com/e1b6987953b44b06af771c434831e631/in
 </div>
 </div>
 
+<!-- 🔥 Sticky Bottom Ad (5 sec delay) -->
+<div id="stickyAd" class="sticky-ad">
+  <script>
+    atOptions = {
+      'key' : '4df4e5576b08d0df080eae705f29a65d',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  </script>
+  <script src="https://yawncollaremotion.com/4df4e5576b08d0df080eae705f29a65d/invoke.js"></script>
+</div>
+
 <script>
 function cleanLink(link){
   return link.split(" ")[0].trim();
@@ -183,7 +214,8 @@ function cleanLink(link){
 function isValid(link){
   return link.includes("terabox") ||
          link.includes("terashare") ||
-         link.includes("nephobox");
+         link.includes("nephobox") ||
+         link.includes("1024terabox");
 }
 
 async function toggleClipboard(){
@@ -219,11 +251,11 @@ function generateLink(){
     document.getElementById("loading").style.display="block";
 
     const targetUrl =
-      "https://videoplay-2ym.pages.dev/?link=" +
+      "https://videoplay-2ym.pages.dev/?url=" +
       encodeURIComponent(userLink);
 
     setTimeout(()=>{
-      window.open(targetUrl,"_blank");
+      window.open(targetUrl, "_blank");
       document.getElementById("loading").style.display="none";
     },1000);
 
@@ -231,6 +263,14 @@ function generateLink(){
     alert("Enter valid Terabox link!");
   }
 }
+
+/* 🔥 5 Second Ad Delay */
+window.addEventListener("load", function(){
+  setTimeout(function(){
+    document.getElementById("adBox").style.display="flex";
+    document.getElementById("stickyAd").style.display="flex";
+  },5000);
+});
 </script>
 
 </body>
