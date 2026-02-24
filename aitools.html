@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate AI Tools Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Ultimate AI Hub 50+</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
@@ -16,31 +16,32 @@ color:white;
 
 header{
 text-align:center;
-padding:30px 20px;
+padding:30px 15px;
 }
 
-h1{font-size:30px}
+h1{font-size:26px}
 
 .category{
-padding:25px;
+padding:20px;
 }
 
 .category h2{
-margin-bottom:20px;
+margin-bottom:15px;
 border-left:4px solid cyan;
 padding-left:10px;
+font-size:20px;
 }
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
 gap:15px;
 }
 
 .card{
 background:rgba(255,255,255,0.08);
-padding:20px;
-border-radius:15px;
+padding:15px;
+border-radius:12px;
 text-align:center;
 cursor:pointer;
 transition:0.3s;
@@ -48,23 +49,34 @@ transition:0.3s;
 
 .card:hover{
 background:rgba(255,255,255,0.18);
-transform:translateY(-5px);
+transform:translateY(-4px);
 }
 
 .card img{
-width:45px;
-height:45px;
-margin-bottom:10px;
+width:40px;
+height:40px;
+margin-bottom:8px;
 }
 
 .card p{
-font-size:14px;
+font-size:13px;
 }
 </style>
 
 <script>
 function openAI(url){
 window.open(url,'_blank');
+}
+
+function createCards(list,containerId){
+let container=document.getElementById(containerId);
+list.forEach(ai=>{
+container.innerHTML+=`
+<div class="card" onclick="openAI('${ai[1]}')">
+<img src="https://www.google.com/s2/favicons?sz=64&domain=${ai[2]}">
+<p>${ai[0]}</p>
+</div>`;
+});
 }
 </script>
 
@@ -75,175 +87,106 @@ window.open(url,'_blank');
 <h1>🚀 Ultimate AI Tools Hub (50+)</h1>
 </header>
 
-<!-- ================= CHAT AI ================= -->
-
+<!-- CHAT -->
 <div class="category">
 <h2>💬 Chat AI</h2>
-<div class="grid">
-
-<div class="card" onclick="openAI('https://chat.openai.com')">
-<img src="https://cdn.simpleicons.org/openai/white">
-<p>ChatGPT</p>
+<div class="grid" id="chat"></div>
 </div>
 
-<div class="card" onclick="openAI('https://gemini.google.com')">
-<img src="https://cdn.simpleicons.org/google/white">
-<p>Gemini</p>
-</div>
-
-<div class="card" onclick="openAI('https://claude.ai')">
-<img src="https://cdn.simpleicons.org/anthropic/white">
-<p>Claude</p>
-</div>
-
-<div class="card" onclick="openAI('https://perplexity.ai')">
-<img src="https://cdn.simpleicons.org/perplexity/white">
-<p>Perplexity</p>
-</div>
-
-<div class="card" onclick="openAI('https://copilot.microsoft.com')">
-<img src="https://cdn.simpleicons.org/microsoft/white">
-<p>Copilot</p>
-</div>
-
-</div>
-</div>
-
-<!-- ================= IMAGE AI ================= -->
-
+<!-- IMAGE -->
 <div class="category">
 <h2>🎨 Image AI</h2>
-<div class="grid">
-
-<div class="card" onclick="openAI('https://midjourney.com')">
-<img src="https://cdn.simpleicons.org/midjourney/white">
-<p>Midjourney</p>
+<div class="grid" id="image"></div>
 </div>
 
-<div class="card" onclick="openAI('https://stability.ai')">
-<img src="https://cdn.simpleicons.org/stabilityai/white">
-<p>Stable Diffusion</p>
-</div>
-
-<div class="card" onclick="openAI('https://firefly.adobe.com')">
-<img src="https://cdn.simpleicons.org/adobe/white">
-<p>Adobe Firefly</p>
-</div>
-
-<div class="card" onclick="openAI('https://canva.com')">
-<img src="https://cdn.simpleicons.org/canva/white">
-<p>Canva AI</p>
-</div>
-
-<div class="card" onclick="openAI('https://leonardo.ai')">
-<img src="https://cdn.simpleicons.org/leonardo/white">
-<p>Leonardo AI</p>
-</div>
-
-</div>
-</div>
-
-<!-- ================= VIDEO AI ================= -->
-
+<!-- VIDEO -->
 <div class="category">
 <h2>🎬 Video AI</h2>
-<div class="grid">
-
-<div class="card" onclick="openAI('https://runwayml.com')">
-<img src="https://cdn.simpleicons.org/runway/white">
-<p>Runway</p>
+<div class="grid" id="video"></div>
 </div>
 
-<div class="card" onclick="openAI('https://pika.art')">
-<img src="https://cdn.simpleicons.org/pika/white">
-<p>Pika</p>
-</div>
-
-<div class="card" onclick="openAI('https://synthesia.io')">
-<img src="https://cdn.simpleicons.org/synthesia/white">
-<p>Synthesia</p>
-</div>
-
-<div class="card" onclick="openAI('https://heygen.com')">
-<img src="https://cdn.simpleicons.org/hey/white">
-<p>HeyGen</p>
-</div>
-
-<div class="card" onclick="openAI('https://veed.io')">
-<img src="https://cdn.simpleicons.org/veed/white">
-<p>VEED AI</p>
-</div>
-
-</div>
-</div>
-
-<!-- ================= CODING AI ================= -->
-
+<!-- CODING -->
 <div class="category">
 <h2>💻 Coding AI</h2>
-<div class="grid">
-
-<div class="card" onclick="openAI('https://github.com/features/copilot')">
-<img src="https://cdn.simpleicons.org/github/white">
-<p>GitHub Copilot</p>
+<div class="grid" id="coding"></div>
 </div>
 
-<div class="card" onclick="openAI('https://codeium.com')">
-<img src="https://cdn.simpleicons.org/codeium/white">
-<p>Codeium</p>
-</div>
-
-<div class="card" onclick="openAI('https://tabnine.com')">
-<img src="https://cdn.simpleicons.org/tabnine/white">
-<p>Tabnine</p>
-</div>
-
-<div class="card" onclick="openAI('https://cursor.sh')">
-<img src="https://cdn.simpleicons.org/cursor/white">
-<p>Cursor AI</p>
-</div>
-
-<div class="card" onclick="openAI('https://replit.com')">
-<img src="https://cdn.simpleicons.org/replit/white">
-<p>Replit AI</p>
-</div>
-
-</div>
-</div>
-
-<!-- ================= MUSIC AI ================= -->
-
+<!-- MUSIC -->
 <div class="category">
 <h2>🎵 Music AI</h2>
-<div class="grid">
-
-<div class="card" onclick="openAI('https://suno.ai')">
-<img src="https://cdn.simpleicons.org/suno/white">
-<p>Suno</p>
+<div class="grid" id="music"></div>
 </div>
 
-<div class="card" onclick="openAI('https://udio.com')">
-<img src="https://cdn.simpleicons.org/udio/white">
-<p>Udio</p>
-</div>
+<script>
 
-<div class="card" onclick="openAI('https://aiva.ai')">
-<img src="https://cdn.simpleicons.org/aiva/white">
-<p>AIVA</p>
-</div>
+/* 10 per category = 50 total */
 
-<div class="card" onclick="openAI('https://mubert.com')">
-<img src="https://cdn.simpleicons.org/mubert/white">
-<p>Mubert</p>
-</div>
+createCards([
+["ChatGPT","https://chat.openai.com","openai.com"],
+["Gemini","https://gemini.google.com","google.com"],
+["Claude","https://claude.ai","claude.ai"],
+["Perplexity","https://perplexity.ai","perplexity.ai"],
+["Poe","https://poe.com","poe.com"],
+["YouChat","https://you.com","you.com"],
+["Pi AI","https://pi.ai","pi.ai"],
+["Character AI","https://character.ai","character.ai"],
+["Copilot","https://copilot.microsoft.com","microsoft.com"],
+["HuggingChat","https://huggingface.co","huggingface.co"]
+],"chat");
 
-<div class="card" onclick="openAI('https://boomy.com')">
-<img src="https://cdn.simpleicons.org/boomy/white">
-<p>Boomy</p>
-</div>
+createCards([
+["Midjourney","https://midjourney.com","midjourney.com"],
+["Leonardo","https://leonardo.ai","leonardo.ai"],
+["Stable Diffusion","https://stability.ai","stability.ai"],
+["DALL·E","https://openai.com","openai.com"],
+["Firefly","https://firefly.adobe.com","adobe.com"],
+["Canva AI","https://canva.com","canva.com"],
+["Ideogram","https://ideogram.ai","ideogram.ai"],
+["Playground AI","https://playgroundai.com","playgroundai.com"],
+["NightCafe","https://nightcafe.studio","nightcafe.studio"],
+["BlueWillow","https://bluewillow.ai","bluewillow.ai"]
+],"image");
 
-</div>
-</div>
+createCards([
+["Runway","https://runwayml.com","runwayml.com"],
+["Pika","https://pika.art","pika.art"],
+["Synthesia","https://synthesia.io","synthesia.io"],
+["HeyGen","https://heygen.com","heygen.com"],
+["InVideo","https://invideo.io","invideo.io"],
+["Pictory","https://pictory.ai","pictory.ai"],
+["Lumen5","https://lumen5.com","lumen5.com"],
+["Descript","https://descript.com","descript.com"],
+["VEED","https://veed.io","veed.io"],
+["Kaiber","https://kaiber.ai","kaiber.ai"]
+],"video");
+
+createCards([
+["GitHub Copilot","https://github.com/features/copilot","github.com"],
+["Codeium","https://codeium.com","codeium.com"],
+["Tabnine","https://tabnine.com","tabnine.com"],
+["Cursor","https://cursor.sh","cursor.sh"],
+["Replit","https://replit.com","replit.com"],
+["CodeWhisperer","https://aws.amazon.com/codewhisperer","amazon.com"],
+["Phind","https://phind.com","phind.com"],
+["Blackbox","https://blackbox.ai","blackbox.ai"],
+["AskCodi","https://askcodi.com","askcodi.com"],
+["Mutable AI","https://mutable.ai","mutable.ai"]
+],"coding");
+
+createCards([
+["Suno","https://suno.ai","suno.ai"],
+["Udio","https://udio.com","udio.com"],
+["AIVA","https://aiva.ai","aiva.ai"],
+["Soundraw","https://soundraw.io","soundraw.io"],
+["Boomy","https://boomy.com","boomy.com"],
+["Mubert","https://mubert.com","mubert.com"],
+["Beatoven","https://beatoven.ai","beatoven.ai"],
+["Soundful","https://soundful.com","soundful.com"],
+["Voicemod","https://voicemod.net","voicemod.net"],
+["Endel","https://endel.io","endel.io"]
+],"music");
+
+</script>
 
 </body>
 </html>
