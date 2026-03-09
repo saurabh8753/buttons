@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pinterest Downloader</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+background:linear-gradient(135deg,#ff0066,#ff6600);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.container{
+background:#fff;
+width:95%;
+max-width:600px;
+padding:25px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#e60023;
+}
+
+.inputBox{
+display:flex;
+gap:10px;
+}
+
+input{
+flex:1;
+padding:12px;
+border-radius:8px;
+border:1px solid #ddd;
+font-size:16px;
+}
+
+button{
+background:#e60023;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+color:#fff;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#c8001f;
+}
+
+.loader{
+display:none;
+text-align:center;
+margin-top:20px;
+}
+
+.result{
+margin-top:20px;
+display:none;
+}
+
+.result img{
+width:100%;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.title{
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.downloads{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.download-btn{
+background:#111;
+color:#fff;
+padding:12px;
+border-radius:8px;
+text-decoration:none;
+text-align:center;
+}
+
+.download-btn:hover{
+background:#333;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1><i class="fab fa-pinterest"></i> Pinterest Downloader</h1>
+
+<div class="inputBox">
+<input id="url" placeholder="Paste Pinterest Link...">
+<button onclick="download()">Download</button>
+</div>
+
+<div class="loader" id="loader">
+<i class="fa fa-spinner fa-spin"></i> Fetching...
+</div>
+
+<div class="result" id="result">
+
+<img id="thumb">
+
+<div class="title" id="title"></div>
+
+<div class="downloads" id="downloads"></div>
+
+</div>
+
+</div>
+
+<script>
+
+async function download(){
+
+let url=document.getElementById("url").value
+
+if(!url){
+alert("Paste Pinterest URL")
+return
+}
+
+document.getElementById("loader").style.display="block"
+document.getElementById("result").style.display="none"
+
+let api=`https://universaldownloader-zeta.vercel.app/api/pinterest/download?url=${encodeURIComponent(url)}`
+
+try{
+
+let res=await fetch(api)
+let data=await res.json()
+
+document.getElementById("loader").style.display="none"
+
+if(!data.success){
+alert("Download failed")
+return
+}
+
+let info=data.data
+
+document.getElementById("result").style.display="block"
+document.getElementById("thumb").src=info.thumbnail
+document.getElementById("title").innerText=info.title
+
+let downloads=document.getElementById("downloads")
+downloads.innerHTML=""
+
+info.downloads.forEach(d=>{
+
+let a=document.createElement("a")
+
+a.href=d.url
+a.innerText=`Download ${d.quality} (${d.format})`
+a.className="download-btn"
+a.target="_blank"
+
+downloads.appendChild(a)
+
+})
+
+}catch(e){
+
+document.getElementById("loader").style.display="none"
+alert("Error fetching data")
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
