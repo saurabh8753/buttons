@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -15,97 +16,137 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Segoe UI;
+font-family:Segoe UI, sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#ff0066,#ff6600);
+background:linear-gradient(135deg,#e60023,#ff6a00);
 min-height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
+padding:20px;
 }
 
 .container{
+
+width:100%;
+max-width:650px;
+
 background:#fff;
-width:95%;
-max-width:600px;
-padding:25px;
-border-radius:15px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+border-radius:16px;
+padding:30px;
+
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
+
 }
 
-h1{
+.logo{
+
 text-align:center;
-margin-bottom:20px;
+font-size:28px;
+font-weight:bold;
 color:#e60023;
+margin-bottom:25px;
+
 }
 
 .inputBox{
-display:flex;
-gap:10px;
+
+width:100%;
+
 }
 
 input{
-flex:1;
-padding:12px;
-border-radius:8px;
+
+width:100%;
+padding:14px;
+
+border-radius:10px;
 border:1px solid #ddd;
+
 font-size:16px;
+
 }
 
-button{
+.download-main{
+
+width:100%;
+margin-top:12px;
+
+padding:14px;
+
 background:#e60023;
+color:white;
+
 border:none;
-padding:12px 18px;
-border-radius:8px;
-color:#fff;
-cursor:pointer;
+border-radius:10px;
+
 font-size:16px;
+cursor:pointer;
+
 }
 
-button:hover{
-background:#c8001f;
+.download-main:hover{
+background:#c4001f;
 }
 
 .loader{
+
 display:none;
 text-align:center;
+
 margin-top:20px;
 font-size:18px;
+
 }
 
 .result{
-margin-top:20px;
+
 display:none;
+margin-top:25px;
+
 }
 
 .result img{
+
 width:100%;
-border-radius:10px;
-margin-bottom:10px;
+border-radius:12px;
+margin-bottom:15px;
+
 }
 
 .title{
-font-weight:bold;
-margin-bottom:15px;
+
 font-size:18px;
+font-weight:600;
+margin-bottom:15px;
+
 }
 
 .downloads{
+
 display:flex;
 flex-direction:column;
 gap:10px;
+
 }
 
 .download-btn{
+
 background:#111;
-color:#fff;
+color:white;
+
 padding:12px;
+
 border-radius:8px;
+
 border:none;
+
 cursor:pointer;
-font-size:16px;
+
+font-size:15px;
+
 }
 
 .download-btn:hover{
@@ -113,22 +154,36 @@ background:#333;
 }
 
 </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
-<h1><i class="fab fa-pinterest"></i> Pinterest Downloader</h1>
+<div class="logo">
+<i class="fab fa-pinterest"></i> Pinterest Downloader
+</div>
+
 
 <div class="inputBox">
-<input id="url" placeholder="Paste Pinterest Link...">
-<button onclick="downloadMedia()">Download</button>
+
+<input id="url" placeholder="Paste Pinterest link here...">
+
+<button class="download-main" onclick="downloadMedia()">
+Download
+</button>
+
 </div>
 
+
 <div class="loader" id="loader">
+
 <i class="fa fa-spinner fa-spin"></i> Fetching media...
+
 </div>
+
 
 <div class="result" id="result">
 
@@ -142,6 +197,8 @@ background:#333;
 
 </div>
 
+
+
 <script>
 
 async function downloadMedia(){
@@ -149,8 +206,11 @@ async function downloadMedia(){
 let url=document.getElementById("url").value
 
 if(!url){
+
 alert("Paste Pinterest URL")
+
 return
+
 }
 
 document.getElementById("loader").style.display="block"
@@ -161,20 +221,27 @@ let api=`https://universaldownloader-zeta.vercel.app/api/pinterest/download?url=
 try{
 
 let res=await fetch(api)
+
 let data=await res.json()
 
 document.getElementById("loader").style.display="none"
 
 if(!data.success){
+
 alert("Download failed")
+
 return
+
 }
 
 let info=data.data
 
 document.getElementById("result").style.display="block"
+
 document.getElementById("thumb").src=info.thumbnail
+
 document.getElementById("title").innerText=info.title
+
 
 let downloads=document.getElementById("downloads")
 
@@ -185,47 +252,44 @@ info.downloads.forEach(d=>{
 let btn=document.createElement("button")
 
 btn.innerText=`Download ${d.quality} (${d.format})`
+
 btn.className="download-btn"
 
-btn.onclick=()=>forceDownload(d.url,info.title)
+btn.onclick=()=>forceDownload(d.url)
 
 downloads.appendChild(btn)
 
 })
 
-}catch(e){
+}
+
+catch(e){
 
 document.getElementById("loader").style.display="none"
-alert("Error fetching data")
+
+alert("API Error")
 
 }
 
 }
 
 
-async function forceDownload(url,filename){
 
-try{
+function forceDownload(url){
 
-let response = await fetch(url)
-let blob = await response.blob()
+let iframe=document.createElement("iframe")
 
-let link=document.createElement("a")
+iframe.style.display="none"
 
-link.href=URL.createObjectURL(blob)
-link.download=filename
+iframe.src=url
 
-document.body.appendChild(link)
+document.body.appendChild(iframe)
 
-link.click()
+setTimeout(()=>{
 
-document.body.removeChild(link)
+document.body.removeChild(iframe)
 
-}catch(err){
-
-window.open(url)
-
-}
+},5000)
 
 }
 
