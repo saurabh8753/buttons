@@ -1,151 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinterest Downloader | HD Preview</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <style>
-        /* [Pichla CSS same rahega, bas preview styling thodi behtar ki hai] */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: radial-gradient(circle at top left, #e60023, #8e0016); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .container { width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border-radius: 24px; padding: 40px 30px; border: 1px solid rgba(255, 255, 255, 0.2); color: white; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4); text-align: center; }
-        .logo { font-size: 32px; font-weight: 600; margin-bottom: 30px; }
-        input { width: 100%; padding: 16px; border-radius: 12px; border: none; background: rgba(255, 255, 255, 0.9); margin-bottom: 20px; outline: none; color: #333; }
-        .main-btn { width: 100%; padding: 16px; border: none; border-radius: 12px; background: #e60023; color: white; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .main-btn:hover { background: #ff1a3d; transform: translateY(-2px); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* Professional Loader */
-        .loader-container { display: none; margin: 30px 0; }
-        .custom-loader { width: 45px; height: 45px; border: 5px solid rgba(255,255,255,0.2); border-bottom-color: #fff; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+<title>Pinterest Downloader</title>
 
-        .result { display: none; margin-top: 30px; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        /* Image & Video Container */
-        .preview-box { position: relative; width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: #000; }
-        .preview-box img, .preview-box video { width: 100%; display: block; border-radius: 15px; }
+<style>
 
-        .title { font-size: 15px; margin-bottom: 15px; opacity: 0.9; font-weight: 400; }
-        .downloads { display: grid; gap: 10px; }
-        .download-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; }
-        .download-btn:hover { background: #fff; color: #e60023; }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
 
-        .progress { height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 20px; display: none; overflow: hidden; }
-        .bar { height: 100%; width: 0%; background: #00ffa2; transition: width 0.2s; }
-    </style>
+body{
+
+background:linear-gradient(135deg,#e60023,#ff7b00);
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+padding:20px;
+
+}
+
+.container{
+
+width:100%;
+max-width:650px;
+
+background:white;
+
+padding:25px;
+
+border-radius:15px;
+
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+
+}
+
+h1{
+
+text-align:center;
+
+color:#e60023;
+
+margin-bottom:20px;
+
+}
+
+input{
+
+width:100%;
+
+padding:12px;
+
+border-radius:8px;
+
+border:1px solid #ddd;
+
+margin-bottom:10px;
+
+}
+
+button{
+
+width:100%;
+
+padding:12px;
+
+border:none;
+
+background:#e60023;
+
+color:white;
+
+border-radius:8px;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#c4001f;
+
+}
+
+.preview img,
+.preview video{
+
+width:100%;
+
+margin-top:20px;
+
+border-radius:10px;
+
+}
+
+.downloads{
+
+margin-top:15px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:10px;
+
+}
+
+.download-btn{
+
+background:#111;
+
+}
+
+</style>
+
 </head>
+
+
 <body>
 
 <div class="container">
-    <div class="logo"><i class="fab fa-pinterest"></i> PinSave</div>
-    <input id="url" type="text" placeholder="Paste Pinterest link here...">
-    <button class="main-btn" onclick="downloadMedia()">Download Media</button>
 
-    <div class="loader-container" id="loader">
-        <span class="custom-loader"></span>
-        <p style="margin-top:10px; font-size: 13px;">Analyzing link...</p>
-    </div>
+<h1><i class="fab fa-pinterest"></i> Pinterest Downloader</h1>
 
-    <div class="progress" id="progress"><div class="bar" id="bar"></div></div>
+<input id="url" placeholder="Paste Pinterest link here">
 
-    <div class="result" id="result">
-        <div class="preview-box" id="preview"></div>
-        <div class="title" id="title"></div>
-        <div class="downloads" id="downloads"></div>
-    </div>
+<button onclick="fetchMedia()">Download</button>
+
+<div class="preview" id="preview"></div>
+
+<div class="downloads" id="downloads"></div>
+
 </div>
 
+
 <script>
-    async function downloadMedia() {
-        let url = document.getElementById("url").value;
-        if (!url) { alert("Please paste a link first!"); return; }
 
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("result").style.display = "none";
+async function fetchMedia(){
 
-        try {
-            let res = await fetch(`https://universal-downloaders.vercel.app/api/pinterest/download?url=${encodeURIComponent(url)}`);
-            let data = await res.json();
-            document.getElementById("loader").style.display = "none";
+let url=document.getElementById("url").value
 
-            if (!data.success) { alert("Could not fetch media."); return; }
+if(!url){
 
-            let info = data.data;
-            document.getElementById("result").style.display = "block";
-            document.getElementById("title").innerText = info.title || "Pinterest Media";
+alert("Paste Pinterest URL")
 
-            let previewContainer = document.getElementById("preview");
-            previewContainer.innerHTML = "";
+return
 
-            // Check if media is video or image
-            let firstMedia = info.downloads[0].url;
-            let thumb = info.thumbnail; // API se thumbnail nikalna
+}
 
-            if (firstMedia.includes(".mp4")) {
-                // Video ke liye poster (thumbnail) add kiya hai
-                previewContainer.innerHTML = `
-                    <video controls poster="${thumb}">
-                        <source src="${firstMedia}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>`;
-            } else {
-                previewContainer.innerHTML = `<img src="${thumb || firstMedia}" alt="Preview">`;
-            }
+let api=`https://universal-downloaders.vercel.app/api/pinterest/download?url=${encodeURIComponent(url)}`
 
-            let downloads = document.getElementById("downloads");
-            downloads.innerHTML = "";
-            info.downloads.forEach(d => {
-                let btn = document.createElement("button");
-                btn.className = "download-btn";
-                btn.innerHTML = `<i class="fas fa-arrow-down"></i> Save ${d.quality} (${d.format})`;
-                btn.onclick = () => downloadFile(d.url);
-                downloads.appendChild(btn);
-            });
+let res=await fetch(api)
 
-        } catch (e) {
-            document.getElementById("loader").style.display = "none";
-            alert("API Error. Please try again.");
-        }
-    }
+let data=await res.json()
 
-    async function downloadFile(url) {
-        const progress = document.getElementById("progress");
-        const bar = document.getElementById("bar");
-        progress.style.display = "block";
-        bar.style.width = "0%";
+let info=data.data
 
-        try {
-            const response = await fetch(url);
-            const reader = response.body.getReader();
-            const contentLength = +response.headers.get("Content-Length") || 0;
-            let receivedLength = 0;
-            let chunks = [];
+let preview=document.getElementById("preview")
 
-            while(true) {
-                const {done, value} = await reader.read();
-                if (done) break;
-                chunks.push(value);
-                receivedLength += value.length;
-                if (contentLength) {
-                    bar.style.width = Math.round((receivedLength / contentLength) * 100) + "%";
-                }
-            }
+let downloads=document.getElementById("downloads")
 
-            let blob = new Blob(chunks);
-            let a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "Pin_Media_" + Date.now();
-            a.click();
-            setTimeout(() => progress.style.display = "none", 1000);
-        } catch (err) {
-            alert("Download error.");
-            progress.style.display = "none";
-        }
-    }
+preview.innerHTML=""
+downloads.innerHTML=""
+
+let first=info.downloads[0].url
+
+
+// VIDEO PREVIEW
+if(first.includes(".mp4")){
+
+preview.innerHTML=`<video controls src="${first}"></video>`
+
+}
+
+// IMAGE PREVIEW
+else{
+
+preview.innerHTML=`<img src="${info.thumbnail}">`
+
+}
+
+
+// DOWNLOAD BUTTONS
+info.downloads.forEach(d=>{
+
+let btn=document.createElement("button")
+
+btn.className="download-btn"
+
+btn.innerText=`Download ${d.quality} (${d.format})`
+
+btn.onclick=()=>downloadFile(d.url)
+
+downloads.appendChild(btn)
+
+})
+
+}
+
+
+// FORCE DOWNLOAD
+function downloadFile(url){
+
+const proxy =
+"https://universal-downloaders.vercel.app/api/pinterest/file?url=" +
+encodeURIComponent(url)
+
+window.open(proxy)
+
+}
+
 </script>
 
 </body>
