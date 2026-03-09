@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Pinterest Downloader</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -20,8 +22,8 @@ body{
 background:linear-gradient(135deg,#ff0066,#ff6600);
 min-height:100vh;
 display:flex;
-justify-content:center;
 align-items:center;
+justify-content:center;
 }
 
 .container{
@@ -70,6 +72,7 @@ background:#c8001f;
 display:none;
 text-align:center;
 margin-top:20px;
+font-size:18px;
 }
 
 .result{
@@ -85,7 +88,8 @@ margin-bottom:10px;
 
 .title{
 font-weight:bold;
-margin-bottom:10px;
+margin-bottom:15px;
+font-size:18px;
 }
 
 .downloads{
@@ -99,8 +103,9 @@ background:#111;
 color:#fff;
 padding:12px;
 border-radius:8px;
-text-decoration:none;
-text-align:center;
+border:none;
+cursor:pointer;
+font-size:16px;
 }
 
 .download-btn:hover{
@@ -118,11 +123,11 @@ background:#333;
 
 <div class="inputBox">
 <input id="url" placeholder="Paste Pinterest Link...">
-<button onclick="download()">Download</button>
+<button onclick="downloadMedia()">Download</button>
 </div>
 
 <div class="loader" id="loader">
-<i class="fa fa-spinner fa-spin"></i> Fetching...
+<i class="fa fa-spinner fa-spin"></i> Fetching media...
 </div>
 
 <div class="result" id="result">
@@ -139,7 +144,7 @@ background:#333;
 
 <script>
 
-async function download(){
+async function downloadMedia(){
 
 let url=document.getElementById("url").value
 
@@ -172,18 +177,19 @@ document.getElementById("thumb").src=info.thumbnail
 document.getElementById("title").innerText=info.title
 
 let downloads=document.getElementById("downloads")
+
 downloads.innerHTML=""
 
 info.downloads.forEach(d=>{
 
-let a=document.createElement("a")
+let btn=document.createElement("button")
 
-a.href=d.url
-a.innerText=`Download ${d.quality} (${d.format})`
-a.className="download-btn"
-a.target="_blank"
+btn.innerText=`Download ${d.quality} (${d.format})`
+btn.className="download-btn"
 
-downloads.appendChild(a)
+btn.onclick=()=>forceDownload(d.url,info.title)
+
+downloads.appendChild(btn)
 
 })
 
@@ -191,6 +197,33 @@ downloads.appendChild(a)
 
 document.getElementById("loader").style.display="none"
 alert("Error fetching data")
+
+}
+
+}
+
+
+async function forceDownload(url,filename){
+
+try{
+
+let response = await fetch(url)
+let blob = await response.blob()
+
+let link=document.createElement("a")
+
+link.href=URL.createObjectURL(blob)
+link.download=filename
+
+document.body.appendChild(link)
+
+link.click()
+
+document.body.removeChild(link)
+
+}catch(err){
+
+window.open(url)
 
 }
 
