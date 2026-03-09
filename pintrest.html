@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pinterest Downloader</title>
+<title>Pinterest Downloader PRO</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
@@ -20,15 +22,15 @@ font-family:Segoe UI;
 
 body{
 
-background:linear-gradient(135deg,#e60023,#ff7b00);
+background:linear-gradient(135deg,#ff003c,#ff7b00);
 
 min-height:100vh;
 
 display:flex;
 
-justify-content:center;
-
 align-items:center;
+
+justify-content:center;
 
 padding:20px;
 
@@ -39,37 +41,47 @@ padding:20px;
 width:100%;
 max-width:650px;
 
-background:white;
+padding:30px;
 
-padding:25px;
+border-radius:20px;
 
-border-radius:15px;
+background:rgba(255,255,255,0.15);
 
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,0.25);
+
+color:white;
+
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
 
 }
 
-h1{
+.logo{
+
+font-size:28px;
+
+font-weight:bold;
 
 text-align:center;
 
-color:#e60023;
-
-margin-bottom:20px;
+margin-bottom:25px;
 
 }
 
-input{
+.inputBox input{
 
 width:100%;
 
-padding:12px;
+padding:14px;
 
-border-radius:8px;
+border-radius:10px;
 
-border:1px solid #ddd;
+border:none;
 
-margin-bottom:10px;
+font-size:16px;
+
+margin-bottom:12px;
 
 }
 
@@ -77,15 +89,15 @@ button{
 
 width:100%;
 
-padding:12px;
+padding:14px;
 
 border:none;
 
-background:#e60023;
+border-radius:10px;
+
+background:#ff003c;
 
 color:white;
-
-border-radius:8px;
 
 font-size:16px;
 
@@ -95,7 +107,25 @@ cursor:pointer;
 
 button:hover{
 
-background:#c4001f;
+background:#d90032;
+
+}
+
+.loader{
+
+display:none;
+
+text-align:center;
+
+margin-top:15px;
+
+}
+
+.preview{
+
+margin-top:20px;
+
+animation:fadeIn 0.6s ease;
 
 }
 
@@ -104,9 +134,7 @@ background:#c4001f;
 
 width:100%;
 
-margin-top:20px;
-
-border-radius:10px;
+border-radius:12px;
 
 }
 
@@ -126,28 +154,109 @@ gap:10px;
 
 background:#111;
 
+border:none;
+
+padding:12px;
+
+border-radius:8px;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+.download-btn:hover{
+
+background:#333;
+
+}
+
+.progress{
+
+height:8px;
+
+background:rgba(255,255,255,0.3);
+
+border-radius:10px;
+
+margin-top:15px;
+
+overflow:hidden;
+
+display:none;
+
+}
+
+.bar{
+
+height:100%;
+
+width:0%;
+
+background:#00ffa2;
+
+transition:width 0.3s;
+
+}
+
+@keyframes fadeIn{
+
+from{
+opacity:0;
+transform:translateY(10px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
 }
 
 </style>
 
 </head>
 
-
 <body>
+
 
 <div class="container">
 
-<h1><i class="fab fa-pinterest"></i> Pinterest Downloader</h1>
+<div class="logo">
+<i class="fab fa-pinterest"></i> Pinterest Downloader
+</div>
+
+
+<div class="inputBox">
 
 <input id="url" placeholder="Paste Pinterest link here">
 
-<button onclick="fetchMedia()">Download</button>
+<button onclick="fetchMedia()">
+Download
+</button>
+
+</div>
+
+
+<div class="loader" id="loader">
+
+<i class="fa fa-spinner fa-spin"></i> Fetching media...
+
+</div>
+
+
+<div class="progress" id="progress">
+<div class="bar" id="bar"></div>
+</div>
+
 
 <div class="preview" id="preview"></div>
 
 <div class="downloads" id="downloads"></div>
 
 </div>
+
 
 
 <script>
@@ -164,11 +273,17 @@ return
 
 }
 
+document.getElementById("loader").style.display="block"
+
 let api=`https://universal-downloaders.vercel.app/api/pinterest/download?url=${encodeURIComponent(url)}`
+
+try{
 
 let res=await fetch(api)
 
 let data=await res.json()
+
+document.getElementById("loader").style.display="none"
 
 let info=data.data
 
@@ -177,27 +292,23 @@ let preview=document.getElementById("preview")
 let downloads=document.getElementById("downloads")
 
 preview.innerHTML=""
+
 downloads.innerHTML=""
 
 let first=info.downloads[0].url
 
 
-// VIDEO PREVIEW
 if(first.includes(".mp4")){
 
 preview.innerHTML=`<video controls src="${first}"></video>`
 
-}
-
-// IMAGE PREVIEW
-else{
+}else{
 
 preview.innerHTML=`<img src="${info.thumbnail}">`
 
 }
 
 
-// DOWNLOAD BUTTONS
 info.downloads.forEach(d=>{
 
 let btn=document.createElement("button")
@@ -214,15 +325,51 @@ downloads.appendChild(btn)
 
 }
 
+catch{
 
-// FORCE DOWNLOAD
+document.getElementById("loader").style.display="none"
+
+alert("API Error")
+
+}
+
+}
+
+
+// DOWNLOAD PROGRESS
 function downloadFile(url){
 
-const proxy =
-"https://universal-downloaders.vercel.app/api/pinterest/file?url=" +
-encodeURIComponent(url)
+const progress=document.getElementById("progress")
+
+const bar=document.getElementById("bar")
+
+progress.style.display="block"
+
+bar.style.width="0%"
+
+let percent=0
+
+let interval=setInterval(()=>{
+
+percent+=10
+
+bar.style.width=percent+"%"
+
+if(percent>=100){
+
+clearInterval(interval)
+
+const proxy=
+"https://universal-downloaders.vercel.app/api/pinterest/file?url="
++encodeURIComponent(url)
 
 window.open(proxy)
+
+progress.style.display="none"
+
+}
+
+},100)
 
 }
 
