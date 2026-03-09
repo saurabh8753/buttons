@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pinterest Downloader PRO</title>
+<title>Pinterest Downloader</title>
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -28,9 +28,9 @@ min-height:100vh;
 
 display:flex;
 
-align-items:center;
-
 justify-content:center;
+
+align-items:center;
 
 padding:20px;
 
@@ -59,17 +59,17 @@ box-shadow:0 15px 40px rgba(0,0,0,0.3);
 
 .logo{
 
+text-align:center;
+
 font-size:28px;
 
 font-weight:bold;
-
-text-align:center;
 
 margin-bottom:25px;
 
 }
 
-.inputBox input{
+input{
 
 width:100%;
 
@@ -111,13 +111,38 @@ background:#d90032;
 
 }
 
+/* Loader */
+
 .loader{
 
 display:none;
 
 text-align:center;
 
-margin-top:15px;
+margin-top:20px;
+
+}
+
+.spinner{
+
+width:45px;
+height:45px;
+
+border:4px solid rgba(255,255,255,0.3);
+
+border-top:4px solid white;
+
+border-radius:50%;
+
+animation:spin 1s linear infinite;
+
+margin:auto;
+
+}
+
+@keyframes spin{
+
+100%{transform:rotate(360deg)}
 
 }
 
@@ -125,7 +150,7 @@ margin-top:15px;
 
 margin-top:20px;
 
-animation:fadeIn 0.5s ease;
+animation:fade 0.4s ease;
 
 }
 
@@ -134,43 +159,39 @@ animation:fadeIn 0.5s ease;
 
 width:100%;
 
-border-radius:12px;
+border-radius:14px;
+
+box-shadow:0 5px 20px rgba(0,0,0,0.3);
 
 }
 
 .downloads{
 
-margin-top:15px;
+margin-top:20px;
 
 display:flex;
 
 flex-direction:column;
 
-gap:12px;
+gap:14px;
 
 }
 
-.download-btn{
+/* Professional download cards */
+
+.download-card{
 
 display:flex;
 
 align-items:center;
 
-justify-content:center;
+justify-content:space-between;
 
-gap:10px;
+background:rgba(0,0,0,0.5);
 
-padding:14px;
+padding:14px 18px;
 
-border:none;
-
-border-radius:10px;
-
-font-size:15px;
-
-background:linear-gradient(135deg,#000,#333);
-
-color:white;
+border-radius:12px;
 
 cursor:pointer;
 
@@ -178,31 +199,70 @@ transition:0.3s;
 
 }
 
-.download-btn i{
+.download-card:hover{
 
-font-size:18px;
+transform:translateY(-2px);
+
+background:rgba(0,0,0,0.7);
+
+}
+
+.left{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+}
+
+.icon{
+
+font-size:20px;
+
+}
+
+.quality{
+
+font-weight:bold;
+
+}
+
+.format{
+
+opacity:0.8;
+
+font-size:13px;
+
+}
+
+.download-btn{
+
+background:#ff003c;
+
+border:none;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+color:white;
+
+cursor:pointer;
 
 }
 
 .download-btn:hover{
 
-transform:translateY(-2px);
-
-background:linear-gradient(135deg,#222,#444);
+background:#d90032;
 
 }
 
-@keyframes fadeIn{
+@keyframes fade{
 
-from{
-opacity:0;
-transform:translateY(10px);
-}
-
-to{
-opacity:1;
-transform:translateY(0);
-}
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:translateY(0)}
 
 }
 
@@ -210,8 +270,8 @@ transform:translateY(0);
 
 </head>
 
-<body>
 
+<body>
 
 <div class="container">
 
@@ -219,31 +279,21 @@ transform:translateY(0);
 <i class="fab fa-pinterest"></i> Pinterest Downloader
 </div>
 
-
-<div class="inputBox">
-
 <input id="url" placeholder="Paste Pinterest link here">
 
 <button class="main-btn" onclick="fetchMedia()">
 Download
 </button>
 
-</div>
-
-
 <div class="loader" id="loader">
-
-<i class="fa fa-spinner fa-spin"></i> Fetching media...
-
+<div class="spinner"></div>
 </div>
-
 
 <div class="preview" id="preview"></div>
 
 <div class="downloads" id="downloads"></div>
 
 </div>
-
 
 
 <script>
@@ -285,33 +335,50 @@ downloads.innerHTML=""
 let first=info.downloads[0].url
 
 
-// VIDEO PREVIEW
 if(first.includes(".mp4")){
 
 preview.innerHTML=`<video controls src="${first}"></video>`
 
-}
-
-// IMAGE PREVIEW
-else{
+}else{
 
 preview.innerHTML=`<img src="${info.thumbnail}">`
 
 }
 
 
-// DOWNLOAD BUTTONS
+/* Create download cards */
+
 info.downloads.forEach(d=>{
 
-let btn=document.createElement("button")
+let card=document.createElement("div")
 
-btn.className="download-btn"
+card.className="download-card"
 
-btn.innerHTML=`<i class="fa fa-download"></i> Download ${d.quality} (${d.format})`
+card.innerHTML=`
 
-btn.onclick=()=>downloadFile(d.url)
+<div class="left">
 
-downloads.appendChild(btn)
+<i class="fa fa-download icon"></i>
+
+<div>
+
+<div class="quality">${d.quality}</div>
+
+<div class="format">${d.format}</div>
+
+</div>
+
+</div>
+
+<button class="download-btn">
+Download
+</button>
+
+`
+
+card.onclick=()=>downloadFile(d.url)
+
+downloads.appendChild(card)
 
 })
 
@@ -328,7 +395,6 @@ alert("API Error")
 }
 
 
-// FORCE DOWNLOAD
 function downloadFile(url){
 
 const proxy=
