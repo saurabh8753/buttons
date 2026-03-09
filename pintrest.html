@@ -85,7 +85,7 @@ margin-bottom:12px;
 
 }
 
-button{
+.main-btn{
 
 width:100%;
 
@@ -105,7 +105,7 @@ cursor:pointer;
 
 }
 
-button:hover{
+.main-btn:hover{
 
 background:#d90032;
 
@@ -125,7 +125,7 @@ margin-top:15px;
 
 margin-top:20px;
 
-animation:fadeIn 0.6s ease;
+animation:fadeIn 0.5s ease;
 
 }
 
@@ -146,57 +146,49 @@ display:flex;
 
 flex-direction:column;
 
-gap:10px;
+gap:12px;
 
 }
 
 .download-btn{
 
-background:#111;
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:10px;
+
+padding:14px;
 
 border:none;
 
-padding:12px;
+border-radius:10px;
 
-border-radius:8px;
+font-size:15px;
+
+background:linear-gradient(135deg,#000,#333);
 
 color:white;
 
 cursor:pointer;
 
+transition:0.3s;
+
+}
+
+.download-btn i{
+
+font-size:18px;
+
 }
 
 .download-btn:hover{
 
-background:#333;
+transform:translateY(-2px);
 
-}
-
-.progress{
-
-height:8px;
-
-background:rgba(255,255,255,0.3);
-
-border-radius:10px;
-
-margin-top:15px;
-
-overflow:hidden;
-
-display:none;
-
-}
-
-.bar{
-
-height:100%;
-
-width:0%;
-
-background:#00ffa2;
-
-transition:width 0.3s;
+background:linear-gradient(135deg,#222,#444);
 
 }
 
@@ -232,7 +224,7 @@ transform:translateY(0);
 
 <input id="url" placeholder="Paste Pinterest link here">
 
-<button onclick="fetchMedia()">
+<button class="main-btn" onclick="fetchMedia()">
 Download
 </button>
 
@@ -243,11 +235,6 @@ Download
 
 <i class="fa fa-spinner fa-spin"></i> Fetching media...
 
-</div>
-
-
-<div class="progress" id="progress">
-<div class="bar" id="bar"></div>
 </div>
 
 
@@ -298,24 +285,29 @@ downloads.innerHTML=""
 let first=info.downloads[0].url
 
 
+// VIDEO PREVIEW
 if(first.includes(".mp4")){
 
 preview.innerHTML=`<video controls src="${first}"></video>`
 
-}else{
+}
+
+// IMAGE PREVIEW
+else{
 
 preview.innerHTML=`<img src="${info.thumbnail}">`
 
 }
 
 
+// DOWNLOAD BUTTONS
 info.downloads.forEach(d=>{
 
 let btn=document.createElement("button")
 
 btn.className="download-btn"
 
-btn.innerText=`Download ${d.quality} (${d.format})`
+btn.innerHTML=`<i class="fa fa-download"></i> Download ${d.quality} (${d.format})`
 
 btn.onclick=()=>downloadFile(d.url)
 
@@ -336,40 +328,13 @@ alert("API Error")
 }
 
 
-// DOWNLOAD PROGRESS
+// FORCE DOWNLOAD
 function downloadFile(url){
 
-const progress=document.getElementById("progress")
-
-const bar=document.getElementById("bar")
-
-progress.style.display="block"
-
-bar.style.width="0%"
-
-let percent=0
-
-let interval=setInterval(()=>{
-
-percent+=10
-
-bar.style.width=percent+"%"
-
-if(percent>=100){
-
-clearInterval(interval)
-
 const proxy=
-"https://universal-downloaders.vercel.app/api/pinterest/file?url="
-+encodeURIComponent(url)
+"https://universal-downloaders.vercel.app/api/pinterest/file?url="+encodeURIComponent(url)
 
 window.open(proxy)
-
-progress.style.display="none"
-
-}
-
-},100)
 
 }
 
