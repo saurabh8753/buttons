@@ -131,7 +131,7 @@
         result.style.display = "none";
 
         try {
-            let api = `https://universaldownloader-zeta.vercel.app/api/pinterest/download?url=${encodeURIComponent(url)}`;
+            let api = `https://universal-downloaders.vercel.app/api/pinterest/download?url=${encodeURIComponent(url)}`;
             let res = await fetch(api);
             let data = await res.json();
             
