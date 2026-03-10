@@ -41,30 +41,48 @@ margin-bottom:20px;
 font-size:22px;
 }
 
-.inputBox{
-display:flex;
-gap:8px;
-}
-
 input{
-flex:1;
+width:100%;
 padding:12px;
 border-radius:8px;
 border:1px solid #ddd;
 outline:none;
 }
 
-button{
+#downloadBtn{
+margin-top:10px;
+width:100%;
 background:#4f46e5;
 border:none;
 color:white;
-padding:12px 18px;
+padding:12px;
 border-radius:8px;
 cursor:pointer;
 }
 
-button:hover{
+#downloadBtn:hover{
 opacity:.9;
+}
+
+.loader{
+margin-top:20px;
+display:none;
+text-align:center;
+}
+
+.spinner{
+width:40px;
+height:40px;
+border:4px solid #ddd;
+border-top:4px solid #4f46e5;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
 }
 
 #preview{
@@ -72,7 +90,7 @@ margin-top:20px;
 display:none;
 }
 
-#preview img{
+video{
 width:100%;
 border-radius:10px;
 margin-bottom:15px;
@@ -97,12 +115,6 @@ text-decoration:none;
 font-size:14px;
 }
 
-.loader{
-display:none;
-text-align:center;
-margin-top:15px;
-}
-
 </style>
 </head>
 
@@ -112,20 +124,20 @@ margin-top:15px;
 
 <h1>Facebook Video Downloader</h1>
 
-<div class="inputBox">
 <input id="url" placeholder="Paste Facebook Video Link">
-<button onclick="downloadVideo()">
-<i class="fa fa-download"></i>
+
+<button id="downloadBtn" onclick="getVideo()">
+<i class="fa fa-download"></i> Fetch Video
 </button>
-</div>
 
 <div class="loader" id="loader">
-Fetching Video...
+<div class="spinner"></div>
+<p>Fetching Video...</p>
 </div>
 
 <div id="preview">
 
-<img id="thumb">
+<video id="player" controls></video>
 
 <div id="qualities"></div>
 
@@ -135,12 +147,12 @@ Fetching Video...
 
 <script>
 
-async function downloadVideo(){
+async function getVideo(){
 
 let url=document.getElementById("url").value;
 
 if(!url){
-alert("Paste Facebook link");
+alert("Paste Facebook video link");
 return;
 }
 
@@ -163,9 +175,17 @@ return;
 
 let videos=data.data.data;
 
-let thumb=videos[0].thumbnail;
+let player=document.getElementById("player");
 
-document.getElementById("thumb").src=thumb;
+let first=videos[0];
+
+let firstLink=first.url;
+
+if(first.shouldRender){
+firstLink="https://universal-downloaders.vercel.app"+first.url;
+}
+
+player.src=firstLink;
 
 let html="";
 
@@ -178,6 +198,7 @@ link="https://universal-downloaders.vercel.app"+v.url;
 }
 
 html+=`
+
 <div class="quality">
 
 <span>${v.resolution}</span>
@@ -187,6 +208,7 @@ Download
 </a>
 
 </div>
+
 `;
 
 });
@@ -196,6 +218,8 @@ document.getElementById("qualities").innerHTML=html;
 document.getElementById("preview").style.display="block";
 
 }catch(e){
+
+document.getElementById("loader").style.display="none";
 
 alert("Error fetching video");
 
