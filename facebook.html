@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Facebook Video Downloader</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#4f46e5,#9333ea,#ec4899);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.container{
+background:white;
+padding:25px;
+border-radius:14px;
+max-width:420px;
+width:100%;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+font-size:22px;
+}
+
+.inputBox{
+display:flex;
+gap:8px;
+}
+
+input{
+flex:1;
+padding:12px;
+border-radius:8px;
+border:1px solid #ddd;
+outline:none;
+}
+
+button{
+background:#4f46e5;
+border:none;
+color:white;
+padding:12px 18px;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+#preview{
+margin-top:20px;
+display:none;
+}
+
+#preview img{
+width:100%;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.quality{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#f3f4f6;
+padding:10px;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+.download{
+background:#10b981;
+padding:6px 12px;
+border-radius:6px;
+color:white;
+text-decoration:none;
+font-size:14px;
+}
+
+.loader{
+display:none;
+text-align:center;
+margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Facebook Video Downloader</h1>
+
+<div class="inputBox">
+<input id="url" placeholder="Paste Facebook Video Link">
+<button onclick="downloadVideo()">
+<i class="fa fa-download"></i>
+</button>
+</div>
+
+<div class="loader" id="loader">
+Fetching Video...
+</div>
+
+<div id="preview">
+
+<img id="thumb">
+
+<div id="qualities"></div>
+
+</div>
+
+</div>
+
+<script>
+
+async function downloadVideo(){
+
+let url=document.getElementById("url").value;
+
+if(!url){
+alert("Paste Facebook link");
+return;
+}
+
+document.getElementById("loader").style.display="block";
+document.getElementById("preview").style.display="none";
+
+let api=`https://universal-downloaders.vercel.app/api/meta/download?url=${encodeURIComponent(url)}`;
+
+try{
+
+let res=await fetch(api);
+let data=await res.json();
+
+document.getElementById("loader").style.display="none";
+
+if(!data.success){
+alert("Video not found");
+return;
+}
+
+let videos=data.data.data;
+
+let thumb=videos[0].thumbnail;
+
+document.getElementById("thumb").src=thumb;
+
+let html="";
+
+videos.forEach(v=>{
+
+let link=v.url;
+
+if(v.shouldRender){
+link="https://universal-downloaders.vercel.app"+v.url;
+}
+
+html+=`
+<div class="quality">
+
+<span>${v.resolution}</span>
+
+<a class="download" href="${link}" target="_blank">
+Download
+</a>
+
+</div>
+`;
+
+});
+
+document.getElementById("qualities").innerHTML=html;
+
+document.getElementById("preview").style.display="block";
+
+}catch(e){
+
+alert("Error fetching video");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
