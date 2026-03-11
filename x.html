@@ -75,12 +75,6 @@ display:none;
 margin-top:20px;
 }
 
-.preview img{
-width:100%;
-border-radius:12px;
-margin-bottom:15px;
-}
-
 video{
 width:100%;
 border-radius:12px;
@@ -125,8 +119,6 @@ background:#16a34a;
 
 <div class="preview" id="preview">
 
-<img id="thumb">
-
 <video controls id="player"></video>
 
 <div class="qualities" id="qualities"></div>
@@ -161,8 +153,6 @@ return
 }
 
 let info=data.data
-
-document.getElementById("thumb").src=info.thumbnail
 
 let player=document.getElementById("player")
 player.src=info.videos[0].url
