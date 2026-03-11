@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -7,12 +8,14 @@
 
 <title>Snapchat Downloader</title>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 
 body{
-font-family:Arial;
-background:#fffc00;
 margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#fffc00,#ffd000);
 display:flex;
 justify-content:center;
 align-items:center;
@@ -23,55 +26,98 @@ min-height:100vh;
 width:95%;
 max-width:600px;
 background:white;
-border-radius:15px;
+border-radius:20px;
 padding:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+box-shadow:0 10px 40px rgba(0,0,0,0.2);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+}
+
+.input-box{
+display:flex;
+gap:10px;
 }
 
 input{
-width:100%;
+flex:1;
 padding:12px;
 border-radius:10px;
 border:1px solid #ddd;
 }
 
 button{
-margin-top:10px;
-width:100%;
-padding:12px;
-background:black;
-color:white;
+padding:12px 20px;
 border:none;
 border-radius:10px;
-cursor:pointer;
-}
-
-.snap{
-margin-top:20px;
-border-top:1px solid #eee;
-padding-top:15px;
-}
-
-video,img{
-width:100%;
-border-radius:10px;
-}
-
-.download{
-display:block;
-margin-top:8px;
-background:#00c853;
-padding:10px;
+background:black;
 color:white;
-text-align:center;
-border-radius:8px;
-text-decoration:none;
+cursor:pointer;
 }
 
 .loader{
 display:none;
 text-align:center;
 margin-top:20px;
+}
+
+.profile{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:20px;
+}
+
+.profile img{
+width:40px;
+height:40px;
+border-radius:50%;
+}
+
+.viewer{
+margin-top:20px;
+position:relative;
+}
+
+video,img{
+width:100%;
+border-radius:15px;
+}
+
+.nav{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+background:rgba(0,0,0,0.5);
+color:white;
+border:none;
+font-size:20px;
+padding:10px;
+cursor:pointer;
+border-radius:50%;
+}
+
+.prev{left:10px}
+.next{right:10px}
+
+.download{
+display:block;
+margin-top:10px;
+background:#00c853;
+padding:12px;
+text-align:center;
+color:white;
+border-radius:10px;
+text-decoration:none;
+font-weight:bold;
+}
+
+.counter{
+text-align:center;
+margin-top:10px;
+color:#555;
 }
 
 </style>
@@ -82,78 +128,125 @@ margin-top:20px;
 
 <div class="container">
 
-<h2>👻 Snapchat Downloader</h2>
+<h1>👻 Snapchat Downloader</h1>
 
+<div class="input-box">
 <input id="url" placeholder="Paste Snapchat URL">
-
-<button onclick="downloadSnap()">Download</button>
+<button onclick="fetchSnap()">Download</button>
+</div>
 
 <div class="loader" id="loader">Loading...</div>
 
-<div id="result"></div>
+<div class="profile" id="profile" style="display:none">
+<img id="profilePic">
+<span id="title"></span>
+</div>
+
+<div class="viewer" id="viewer"></div>
+
+<div class="counter" id="counter"></div>
 
 </div>
 
 <script>
 
-async function downloadSnap(){
+let snaps=[]
+let index=0
 
-let url=document.getElementById("url").value;
+function renderSnap(){
 
-if(!url){
-alert("Enter URL");
-return;
-}
+let snap=snaps[index]
 
-document.getElementById("loader").style.display="block";
-document.getElementById("result").innerHTML="";
+let media=snap.snapUrls.mediaUrl
 
-let api=`https://universal-downloaders.vercel.app/api/snapchat/download?url=${encodeURIComponent(url)}`;
-
-try{
-
-let res=await fetch(api);
-let json=await res.json();
-
-let snaps=json.data.data.snapList;
-
-let html="";
-
-snaps.forEach((snap,i)=>{
-
-let media=snap.snapUrls.mediaUrl;
+let html=""
 
 if(snap.snapMediaType==1){
 
-html+=`
-<div class="snap">
+html=`
 <video controls src="${media}"></video>
-<a class="download" href="${media}" download="snapchat-video-${i}.mp4">Download Video</a>
-</div>
-`;
+<a class="download" href="${media}" download="snap-${index}.mp4">
+📥 Download Video
+</a>
+`
 
 }else{
 
-html+=`
-<div class="snap">
+html=`
 <img src="${media}">
-<a class="download" href="${media}" download="snapchat-image-${i}.jpg">Download Image</a>
-</div>
-`;
+<a class="download" href="${media}" download="snap-${index}.jpg">
+📥 Download Image
+</a>
+`
 
 }
 
-});
+html+=`
+<button class="nav prev" onclick="prevSnap()"><i class="fa fa-chevron-left"></i></button>
+<button class="nav next" onclick="nextSnap()"><i class="fa fa-chevron-right"></i></button>
+`
 
-document.getElementById("result").innerHTML=html;
+document.getElementById("viewer").innerHTML=html
 
-}catch(e){
-
-alert("Failed to fetch snaps");
+document.getElementById("counter").innerText=(index+1)+" / "+snaps.length
 
 }
 
-document.getElementById("loader").style.display="none";
+function nextSnap(){
+
+if(index<snaps.length-1){
+index++
+renderSnap()
+}
+
+}
+
+function prevSnap(){
+
+if(index>0){
+index--
+renderSnap()
+}
+
+}
+
+async function fetchSnap(){
+
+let url=document.getElementById("url").value
+
+if(!url){
+alert("Enter Snapchat URL")
+return
+}
+
+document.getElementById("loader").style.display="block"
+
+let api=`https://universal-downloaders.vercel.app/api/snapchat/download?url=${encodeURIComponent(url)}`
+
+try{
+
+let res=await fetch(api)
+let json=await res.json()
+
+snaps=json.data.data.snapList
+
+document.getElementById("profile").style.display="flex"
+
+document.getElementById("profilePic").src=json.data.profilepic
+
+document.getElementById("title").innerText=json.data.title
+
+index=0
+
+renderSnap()
+
+}catch{
+
+alert("Failed to fetch snaps")
+
+}
+
+document.getElementById("loader").style.display="none"
 
 }
 
