@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Snapchat Video Downloader</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+body{
+font-family: Arial;
+background: linear-gradient(135deg,#fffc00,#ff0066);
+margin:0;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+width:95%;
+max-width:500px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(20px);
+border-radius:20px;
+padding:25px;
+text-align:center;
+color:white;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+outline:none;
+font-size:16px;
+}
+
+button{
+margin-top:12px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:#000;
+color:#fff;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.loader{
+display:none;
+margin-top:20px;
+}
+
+.loader div{
+width:30px;
+height:30px;
+border:4px solid #fff;
+border-top:4px solid transparent;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+
+.result{
+margin-top:20px;
+display:none;
+}
+
+video{
+width:100%;
+border-radius:12px;
+margin-top:10px;
+}
+
+.download{
+display:block;
+margin-top:10px;
+padding:12px;
+background:#00ff95;
+color:#000;
+border-radius:10px;
+text-decoration:none;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>👻 Snapchat Downloader</h1>
+
+<input id="url" placeholder="Paste Snapchat URL">
+
+<button onclick="downloadSnap()">Download</button>
+
+<div class="loader" id="loader">
+<div></div>
+</div>
+
+<div class="result" id="result">
+<img id="thumb" width="100%" style="border-radius:10px">
+<video id="video" controls></video>
+<a id="downloadBtn" class="download">Download Video</a>
+</div>
+
+</div>
+
+<script>
+
+async function downloadSnap(){
+
+let url=document.getElementById("url").value;
+
+if(!url){
+alert("Enter Snapchat URL");
+return;
+}
+
+document.getElementById("loader").style.display="block";
+document.getElementById("result").style.display="none";
+
+try{
+
+let api=`https://universal-downloaders.vercel.app/api/snapchat/download?url=${encodeURIComponent(url)}`;
+
+let res=await fetch(api);
+let data=await res.json();
+
+let snap=data.data.data.snapList[0];
+
+let video=snap.snapUrls.mediaUrl;
+let thumb=data.data.data.thumbnailUrl.value;
+
+document.getElementById("thumb").src=thumb;
+document.getElementById("video").src=video;
+document.getElementById("downloadBtn").href=video;
+
+document.getElementById("result").style.display="block";
+
+}catch(err){
+alert("Failed to fetch video");
+}
+
+document.getElementById("loader").style.display="none";
+
+}
+
+</script>
+
+</body>
+</html>
