@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>X (Twitter) Video Downloader</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+background:linear-gradient(135deg,#1d9bf0,#0f172a);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+}
+
+.container{
+width:95%;
+max-width:600px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+border-radius:20px;
+padding:25px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+margin-bottom:15px;
+font-size:16px;
+outline:none;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:#1d9bf0;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:#0ea5e9;
+}
+
+.loader{
+display:none;
+margin-top:20px;
+}
+
+.preview{
+display:none;
+margin-top:20px;
+}
+
+.preview img{
+width:100%;
+border-radius:12px;
+margin-bottom:15px;
+}
+
+video{
+width:100%;
+border-radius:12px;
+margin-bottom:15px;
+}
+
+.qualities{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.download-btn{
+background:#22c55e;
+padding:12px;
+border-radius:10px;
+text-decoration:none;
+color:white;
+font-weight:600;
+}
+
+.download-btn:hover{
+background:#16a34a;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>X Video Downloader</h1>
+
+<input type="text" id="url" placeholder="Paste Twitter/X Video URL">
+
+<button onclick="download()">Download</button>
+
+<div class="loader" id="loader">
+⏳ Fetching Video...
+</div>
+
+<div class="preview" id="preview">
+
+<img id="thumb">
+
+<video controls id="player"></video>
+
+<div class="qualities" id="qualities"></div>
+
+</div>
+
+</div>
+
+<script>
+
+async function download(){
+
+let url=document.getElementById("url").value
+let loader=document.getElementById("loader")
+let preview=document.getElementById("preview")
+
+loader.style.display="block"
+preview.style.display="none"
+
+let api=`https://universal-downloaders.vercel.app/api/twitter/download?url=${encodeURIComponent(url)}`
+
+try{
+
+let res=await fetch(api)
+let data=await res.json()
+
+loader.style.display="none"
+
+if(!data.success){
+alert("Video not found")
+return
+}
+
+let info=data.data
+
+document.getElementById("thumb").src=info.thumbnail
+
+let player=document.getElementById("player")
+player.src=info.videos[0].url
+
+let q=document.getElementById("qualities")
+q.innerHTML=""
+
+info.videos.forEach(v=>{
+
+let btn=document.createElement("a")
+
+btn.href=v.url
+btn.innerText="Download "+v.quality
+btn.className="download-btn"
+btn.download="video.mp4"
+
+q.appendChild(btn)
+
+})
+
+preview.style.display="block"
+
+}catch(err){
+
+loader.style.display="none"
+alert("Error fetching video")
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
