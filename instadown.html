@@ -1,273 +1,381 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Instagram Downloader</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>DesiInsta - Downloader</title>
 
 <style>
-
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI, sans-serif;
 }
 
 body{
-
-background:linear-gradient(135deg,#667eea,#764ba2,#ff0080);
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:20px;
-
+  background:linear-gradient(135deg,#4f46e5,#9333ea,#ec4899);
+  min-height:100vh;
+  color:white;
 }
 
-.container{
-
-width:100%;
-max-width:420px;
-
-background:rgba(255,255,255,0.15);
-backdrop-filter:blur(20px);
-
-border-radius:20px;
-
-padding:25px;
-
-box-shadow:0 8px 32px rgba(0,0,0,0.2);
-
-color:white;
-text-align:center;
-
+/* Top Bar */
+.topbar{
+  background:#4338ca;
+  padding:14px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:600;
 }
 
-h1{
-font-size:22px;
-margin-bottom:15px;
+.topbar span{
+  font-size:18px;
 }
 
-input{
-
-width:100%;
-padding:12px;
-
-border:none;
-outline:none;
-
-border-radius:10px;
-
-margin-top:10px;
-
+/* Hero */
+.hero{
+  text-align:center;
+  padding:40px 20px 20px;
 }
 
-button{
-
-width:100%;
-margin-top:10px;
-
-padding:12px;
-
-border:none;
-
-border-radius:10px;
-
-background:#ff2d75;
-
-color:white;
-
-font-weight:600;
-
-cursor:pointer;
-
+.hero h1{
+  font-size:30px;
 }
 
-button:hover{
-
-background:#e6005c;
-
+.hero p{
+  margin-top:10px;
+  opacity:0.9;
+  font-size:15px;
 }
 
+/* Glass Card */
+.card{
+  max-width:500px;
+  margin:20px auto;
+  padding:20px;
+  border-radius:25px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(20px);
+}
+
+/* Input */
+.input-box{
+  display:flex;
+  background:white;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.input-box input{
+  flex:1;
+  border:none;
+  padding:14px;
+  font-size:14px;
+  outline:none;
+}
+
+.input-box button{
+  background:#f3e8ff;
+  border:none;
+  padding:0 15px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* MAIN DOWNLOAD BUTTON */
+.download-btn{
+  margin-top:18px;
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  color:white;
+  background:linear-gradient(90deg,#22c55e,#16a34a);
+  box-shadow:0 8px 20px rgba(34,197,94,0.4);
+  transition:all 0.25s ease;
+}
+
+.download-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 25px rgba(34,197,94,0.5);
+}
+
+.download-btn:active{
+  transform:scale(0.98);
+}
+
+.download-btn.loading{
+  background:linear-gradient(90deg,#4f46e5,#9333ea);
+}
+
+.download-btn:disabled{
+  opacity:0.7;
+}
+
+.btn-content{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+/* Spinner */
 .loader{
-
-display:none;
-
-margin-top:20px;
-
+  margin-top:15px;
+  text-align:center;
 }
 
 .spinner{
-
-border:4px solid rgba(255,255,255,0.2);
-border-top:4px solid white;
-
-width:40px;
-height:40px;
-
-border-radius:50%;
-
-animation:spin 1s linear infinite;
-
-margin:auto;
-
+  width:28px;
+  height:28px;
+  border:4px solid rgba(255,255,255,0.3);
+  border-top:4px solid white;
+  border-radius:50%;
+  animation:spin 0.6s linear infinite;
+  margin:auto;
 }
 
 @keyframes spin{
-
-0%{transform:rotate(0deg)}
-100%{transform:rotate(360deg)}
-
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
 }
 
+/* Result */
 .result{
-
-margin-top:20px;
-display:none;
-
+  margin-top:20px;
 }
 
-.thumbnail{
-
-width:100%;
-border-radius:15px;
-margin-bottom:10px;
-
+.media-card{
+  background:white;
+  border-radius:20px;
+  padding:15px;
+  margin-top:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
-video{
-
-width:100%;
-border-radius:15px;
-margin-bottom:10px;
-
+.media-wrapper{
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
 }
 
-.download{
-
-display:block;
-
-margin-top:8px;
-
-padding:10px;
-
-background:#00e676;
-
-color:black;
-
-border-radius:10px;
-
-text-decoration:none;
-
-font-weight:600;
-
+.thumb-img{
+  width:100%;
+  border-radius:18px;
 }
 
-.type{
-
-font-size:13px;
-margin-bottom:10px;
-opacity:0.9;
-
+.media-wrapper video{
+  width:100%;
+  display:none;
+  border-radius:18px;
 }
 
+.play-btn{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.65);
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  color:white;
+  cursor:pointer;
+}
+
+/* SKY BLUE PROFESSIONAL DOWNLOAD BUTTON */
+.pro-download-btn{
+  display:block;
+  margin-top:15px;
+  padding:14px;
+  border-radius:30px;
+  text-align:center;
+  text-decoration:none;
+  font-weight:600;
+  color:white;
+  background:linear-gradient(90deg,#38bdf8,#0ea5e9);
+  box-shadow:0 8px 18px rgba(14,165,233,0.4);
+  transition:all 0.25s ease;
+}
+
+.pro-download-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 22px rgba(14,165,233,0.5);
+}
+
+.pro-download-btn:active{
+  transform:scale(0.97);
+}
+
+.dl-content{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.dl-icon{
+  font-size:18px;
+  color:white;
+}
+
+.error{
+  margin-top:15px;
+  color:#ffe4e6;
+  text-align:center;
+}
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
-
-<h1>Instagram Downloader</h1>
-
-<input id="url" placeholder="Paste Instagram Reel / Post / Story link">
-
-<button onclick="download()">Download</button>
-
-<div class="loader" id="loader">
-
-<div class="spinner"></div>
-<p>Fetching media...</p>
-
+<div class="topbar">
+  <span>Desi-Insta</span>
 </div>
 
-<div class="result" id="result">
-
-<p class="type" id="type"></p>
-
-<img id="thumb" class="thumbnail">
-
-<video id="player" controls></video>
-
-<a id="hd" class="download">Download HD</a>
-
-<a id="sd" class="download">Download SD</a>
-
+<div class="hero">
+  <h1>Instagram Video Downloader</h1>
+  <p>Download Instagram, Reels, Photos, Stories instantly</p>
 </div>
+
+<div class="card">
+
+  <div class="input-box">
+    <input type="text" id="url" placeholder="Paste URL here">
+    <button onclick="paste()">Paste</button>
+  </div>
+
+  <button class="download-btn" id="btn" onclick="download()">
+    <span class="btn-content">
+      <span>⬇</span>
+      <span class="text">Download</span>
+    </span>
+  </button>
+
+  <div class="loader" id="loader"></div>
+  <div class="error" id="error"></div>
+  <div class="result" id="result"></div>
 
 </div>
 
 <script>
 
+function paste(){
+  navigator.clipboard.readText()
+  .then(text=>{
+    document.getElementById("url").value=text;
+  });
+}
+
 async function download(){
 
-let url=document.getElementById("url").value
+  const btn=document.getElementById("btn");
+  const btnText=btn.querySelector(".text");
+  const url=document.getElementById("url").value.trim();
+  const loader=document.getElementById("loader");
+  const error=document.getElementById("error");
+  const result=document.getElementById("result");
 
-if(!url){
+  error.innerText="";
+  result.innerHTML="";
+  loader.innerHTML='<div class="spinner"></div>';
 
-alert("Paste Instagram URL")
+  btn.disabled=true;
+  btn.classList.add("loading");
+  btnText.innerText="Processing...";
 
-return
+  try{
 
-}
+    const res=await fetch("https://alldown.yaartunah.workers.dev/",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({video_url:url})
+    });
 
-document.getElementById("loader").style.display="block"
-document.getElementById("result").style.display="none"
+    const data=await res.json();
 
-try{
+    loader.innerHTML="";
+    btn.disabled=false;
+    btn.classList.remove("loading");
+    btnText.innerText="Download";
 
-let api=`https://universal-downloaders.vercel.app/api/meta/download?url=${encodeURIComponent(url)}`
+    if(data.success===1){
 
-let res=await fetch(api)
+      const items=data.data || data.message?.data || [];
 
-let data=await res.json()
+      items.forEach(item=>{
 
-let video=data.data.data[0].url
-let thumb=data.data.data[0].thumbnail
+        const card=document.createElement("div");
+        card.className="media-card";
 
-document.getElementById("thumb").src=thumb
-document.getElementById("player").src=video
+        const videoUrl=item.url;
+        const thumb=item.thumbnail || "";
 
-document.getElementById("hd").href=video
-document.getElementById("sd").href=video
+        if(item.type==="video" || videoUrl.includes(".mp4")){
 
-let type="Instagram Post"
+          card.innerHTML=`
+            <div class="media-wrapper">
+              ${thumb ? `<img src="${thumb}" class="thumb-img">` : ""}
+              <div class="play-btn">▶</div>
+              <video src="${videoUrl}" controls></video>
+            </div>
+            <a href="${videoUrl}" target="_blank" class="pro-download-btn">
+              <span class="dl-content">
+                <span class="dl-icon">⬇</span>
+                <span>Download Now</span>
+              </span>
+            </a>
+          `;
 
-if(url.includes("/reel/")) type="Instagram Reel"
-if(url.includes("/stories/")) type="Instagram Story"
+        }else{
 
-document.getElementById("type").innerText=type
+          card.innerHTML=`
+            <img src="${videoUrl}" class="thumb-img">
+            <a href="${videoUrl}" target="_blank" class="pro-download-btn">
+              <span class="dl-content">
+                <span class="dl-icon">⬇</span>
+                <span>Download Image</span>
+              </span>
+            </a>
+          `;
+        }
 
-document.getElementById("loader").style.display="none"
-document.getElementById("result").style.display="block"
+        result.appendChild(card);
+      });
 
-}catch(e){
+      document.querySelectorAll(".play-btn").forEach(btn=>{
+        btn.addEventListener("click",function(){
+          const wrapper=this.parentElement;
+          const img=wrapper.querySelector("img");
+          const video=wrapper.querySelector("video");
+          if(img) img.style.display="none";
+          this.style.display="none";
+          video.style.display="block";
+          video.play();
+        });
+      });
 
-alert("Failed to fetch media")
+    }else{
+      error.innerText=data.message || "Download failed";
+    }
 
-document.getElementById("loader").style.display="none"
-
-}
-
+  }catch(e){
+    loader.innerHTML="";
+    btn.disabled=false;
+    btn.classList.remove("loading");
+    btnText.innerText="Download";
+    error.innerText="Worker error";
+  }
 }
 
 </script>
 
 </body>
-</html>
+  </html>
