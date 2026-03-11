@@ -1,151 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="referrer" content="no-referrer">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Z-Tera Pro Player</title>
+    <meta name="referrer" content="no-referrer">
+    <title>TeraPlayer Pro - Fast Streaming</title>
     
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --accent: #3b82f6;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Inter', sans-serif;
-        }
-        .main-card {
-            max-width: 900px;
-            margin: 20px auto;
-            background: var(--card);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        /* Video.js Custom Styling */
         .video-js {
             width: 100%;
-            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
         }
         .vjs-big-play-button {
-            top: 50% !important;
-            left: 50% !important;
+            top: 50% !important; left: 50% !important;
             transform: translate(-50%, -50%) !important;
+            background-color: rgba(59, 130, 246, 0.9) !important;
             border-radius: 50% !important;
-            width: 2.5em !important;
-            height: 2.5em !important;
-            line-height: 2.5em !important;
-            background-color: rgba(59, 130, 246, 0.8) !important;
-            border: none !important;
+            width: 2.5em !important; height: 2.5em !important;
+            line-height: 2.5em !important; border: none !important;
         }
-        .btn-gradient {
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 14px;
-        }
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.2);
-        }
+        /* Loading Spinner inside Player */
+        .vjs-loading-spinner { border-radius: 50%; border: 3px solid rgba(59, 130, 246, 0.5) !important; }
     </style>
 </head>
-<body class="p-4">
+<body class="bg-[#0f172a] text-white min-h-screen font-sans">
 
-    <div class="main-card" id="app">
-        <div id="loading" class="py-20 text-center">
-            <i class="fas fa-circle-notch fa-spin text-4xl text-blue-500 mb-4"></i>
-            <p class="text-gray-400 animate-pulse">Fetching Secure Stream...</p>
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-blue-500 mb-2">TeraPlayer <span class="text-white">Pro</span></h1>
+            <p class="text-gray-400">Optimized for high-speed buffering & streaming</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl shadow-2xl mb-8">
+            <div class="flex flex-col md:flex-row gap-3">
+                <input type="text" id="urlInput" placeholder="Paste TeraBox Link..." 
+                       class="flex-1 bg-gray-900/50 border border-gray-700 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <button onclick="fetchVideo()" id="fetchBtn" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 min-w-[160px]">
+                    <span id="loader" class="hidden animate-spin"><i class="fas fa-spinner"></i></span>
+                    <span id="btnText">Get Video</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="playerSection" class="hidden animate-in fade-in duration-500">
+            <div class="glass-card p-2 rounded-2xl mb-6 shadow-2xl">
+                <video id="my-video" class="video-js vjs-big-play-centered vjs-16-9" controls preload="auto" playsinline>
+                    <p class="vjs-no-js">To view this video please enable JavaScript.</p>
+                </video>
+            </div>
+
+            <div class="glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center gap-6">
+                <div id="fileThumb" class="w-24 h-24 bg-gray-800 rounded-xl bg-cover bg-center border border-gray-700 shadow-inner"></div>
+                <div class="flex-1 text-center md:text-left">
+                    <h2 id="fileName" class="text-xl font-bold mb-1 line-clamp-2 text-blue-100">Video Name.mp4</h2>
+                    <p id="fileSize" class="text-blue-400 font-medium italic">Size: 0 MB</p>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <a id="dlBtn" href="#" target="_blank" class="flex-1 md:flex-none bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl font-bold text-center flex items-center justify-center gap-2 transition-all shadow-lg">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="errorBox" class="hidden mt-6 p-4 bg-red-500/10 border border-red-500/50 text-red-400 rounded-xl text-center">
+            <i class="fas fa-exclamation-triangle mr-2"></i> <span>Failed to fetch. Link might be expired or private.</span>
         </div>
     </div>
 
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
-        async function loadVideo() {
-            const app = document.getElementById("app");
-            const videoUrl = new URLSearchParams(location.search).get("url");
-
-            if (!videoUrl) {
-                app.innerHTML = `
-                    <div class="p-10 text-center">
-                        <i class="fas fa-link-slash text-5xl text-red-500 mb-4"></i>
-                        <h2 class="text-xl font-bold">No URL Provided</h2>
-                        <p class="text-gray-400">Please provide a valid TeraBox link in the URL.</p>
-                    </div>`;
-                return;
+        // 1. Player Initialization with Buffering Optimization
+        const player = videojs('my-video', {
+            autoplay: false,
+            preload: 'auto',
+            fluid: true,
+            html5: {
+                vhs: { overrideNative: true },
+                nativeAudioTracks: false,
+                nativeVideoTracks: false
             }
+        });
 
+        async function fetchVideo() {
+            const input = document.getElementById('urlInput').value.trim();
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
+            const playerSection = document.getElementById('playerSection');
+            const errorBox = document.getElementById('errorBox');
+
+            if (!input) return alert("Please enter a link!");
+
+            errorBox.classList.add('hidden');
+            loader.classList.remove('hidden');
+            btnText.innerText = "Buffering...";
+            
             try {
-                const api = `https://ztera.yaartunah.workers.dev/?url=${encodeURIComponent(videoUrl)}`;
-                const res = await fetch(api);
-                const data = await res.json();
+                const response = await fetch(`https://universal-downloaders.vercel.app/api/terabox/download?url=${encodeURIComponent(input)}`);
+                const result = await response.json();
 
-                if (data.status !== "success") throw new Error("API Error");
+                if (result.success && result.data.data["📄 Files"].length > 0) {
+                    const file = result.data.data["📄 Files"][0];
+                    const downloadUrl = file["🔽 Direct Download Link"];
 
-                const file = data.list[0];
-                // Sabse best available stream pick karein
-                const stream = file.fast_stream_url?.["720p"] || file.fast_stream_url?.["480p"] || file.stream_url;
+                    document.getElementById('fileName').innerText = file["📂 Name"];
+                    document.getElementById('fileSize').innerText = "Size: " + file["📏 Size"];
+                    document.getElementById('fileThumb').style.backgroundImage = `url('${file["🖼️ Thumbnails"]["360x270"]}')`;
+                    document.getElementById('dlBtn').href = downloadUrl;
 
-                app.innerHTML = `
-                    <div class="video-container">
-                        <video id="my-video" class="video-js vjs-big-play-centered" controls preload="auto" poster="${file.thumbnail}">
-                            <source src="${stream}" type="video/mp4">
-                        </video>
-                    </div>
+                    // 2. Load Source and optimize playback
+                    player.src({
+                        src: downloadUrl,
+                        type: 'video/mp4'
+                    });
                     
-                    <div class="p-6">
-                        <h1 class="text-xl md:text-2xl font-bold mb-4 leading-tight text-blue-100">${file.name}</h1>
-                        
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                            <div class="bg-black/20 p-3 rounded-lg text-center">
-                                <p class="text-xs text-gray-400 uppercase">Size</p>
-                                <p class="font-bold text-sm">${file.size_formatted}</p>
-                            </div>
-                            <div class="bg-black/20 p-3 rounded-lg text-center">
-                                <p class="text-xs text-gray-400 uppercase">Duration</p>
-                                <p class="font-bold text-sm">${file.duration || 'N/A'}</p>
-                            </div>
-                            <div class="bg-black/20 p-3 rounded-lg text-center">
-                                <p class="text-xs text-gray-400 uppercase">Quality</p>
-                                <p class="font-bold text-sm text-green-400">${file.quality}</p>
-                            </div>
-                            <div class="bg-black/20 p-3 rounded-lg text-center">
-                                <p class="text-xs text-gray-400 uppercase">Format</p>
-                                <p class="font-bold text-sm italic">MP4/HLS</p>
-                            </div>
-                        </div>
+                    // Force start buffering
+                    player.load(); 
+                    
+                    playerSection.classList.remove('hidden');
+                    playerSection.scrollIntoView({ behavior: 'smooth' });
 
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="${file.download_link}" target="_blank" class="btn-gradient flex-1 bg-blue-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
-                                <i class="fas fa-download"></i> Direct Download
-                            </a>
-                            <a href="${file.fast_download_link}" target="_blank" class="btn-gradient flex-1 bg-emerald-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20">
-                                <i class="fas fa-bolt"></i> Fast Download
-                            </a>
-                        </div>
-                    </div>
-                `;
+                    // Auto-resume logic if video stalls
+                    player.on('waiting', function() {
+                        console.log("Buffering... Please wait.");
+                    });
 
-                // Initialize Video.js
-                const player = videojs('my-video', {
-                    fluid: true,
-                    playbackRates: [0.5, 1, 1.25, 1.5, 2]
-                });
-
-            } catch (error) {
-                app.innerHTML = `<div class="p-10 text-center text-red-400">Failed to load video. Link might be expired.</div>`;
-                console.error(error);
+                } else {
+                    throw new Error("Invalid Response");
+                }
+            } catch (err) {
+                console.error(err);
+                errorBox.classList.remove('hidden');
+            } finally {
+                loader.classList.add('hidden');
+                btnText.innerText = "Get Video";
             }
         }
-
-        loadVideo();
     </script>
 </body>
 </html>
