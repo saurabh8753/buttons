@@ -3,98 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer"> <title>TeraBox Player Fix</title>
+    <meta name="referrer" content="no-referrer">
+    <title>TeraBox Player Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center p-6">
+<body class="bg-gray-900 text-white min-h-screen p-5">
 
-    <div class="w-full max-w-2xl bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700">
-        <h1 class="text-2xl font-bold text-center mb-6 text-blue-400">🚀 TeraBox Fast Player</h1>
+    <div class="max-w-xl mx-auto bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+        <h1 class="text-xl font-bold text-center text-blue-400 mb-6">TeraBox Fix Downloader</h1>
+
+        <input type="text" id="teraUrl" placeholder="Paste TeraBox Link..." 
+            class="w-full p-4 rounded-lg bg-gray-700 border-none focus:ring-2 focus:ring-blue-500 mb-4 outline-none">
         
-        <div class="space-y-4">
-            <input type="text" id="teraUrl" placeholder="TeraBox Link Yahan Paste Karein..." 
-                class="w-full p-4 rounded-xl bg-slate-700 border border-slate-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-            
-            <button onclick="fetchVideo()" id="fetchBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform">
-                Get Download/Stream Link
-            </button>
-        </div>
+        <button onclick="fetchVideo()" id="fetchBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-bold">
+            Get Video Link
+        </button>
 
-        <div id="loading" class="hidden mt-10 text-center">
-            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
-            <p class="mt-2 text-slate-400 font-medium">Video Data Load Ho Raha Hai...</p>
-        </div>
+        <div id="loading" class="hidden text-center my-6 text-blue-400 animate-pulse">Processing... Please wait</div>
 
-        <div id="result" class="hidden mt-8 space-y-4">
-            <div class="p-4 bg-slate-900 rounded-xl border border-slate-700">
-                <p id="fileName" class="font-bold text-blue-300 break-words mb-1">Filename</p>
-                <p id="fileSize" class="text-xs text-slate-500 uppercase tracking-widest font-bold">Size: 0 MB</p>
+        <div id="result" class="hidden mt-6 space-y-4">
+            <div class="bg-black p-4 rounded-lg border border-gray-600">
+                <p id="fileName" class="text-sm font-medium break-all"></p>
+                <p id="fileSize" class="text-xs text-gray-400 mt-1"></p>
             </div>
 
-            <div class="text-amber-400 text-sm bg-amber-950/30 p-3 rounded-lg border border-amber-900/50">
-                ⚠️ **Note:** Agar video yahan nahi chalti, toh "Download" ya "Play in VLC" ka use karein.
-            </div>
+            <video id="videoPlayer" controls class="w-full rounded-lg bg-black aspect-video shadow-xl"></video>
 
-            <video id="videoPlayer" controls preload="metadata" class="w-full rounded-xl border-2 border-slate-700 bg-black aspect-video"></video>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <a id="downloadBtn" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 py-3 rounded-lg font-bold shadow-md">
-                    <i class="fas fa-download"></i> Fast Download
-                </a>
-                <a id="vlcBtn" href="#" class="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 py-3 rounded-lg font-bold shadow-md">
-                    <i class="fas fa-play"></i> Play in VLC / MX
-                </a>
+            <div class="flex flex-col gap-3">
+                <a id="downloadBtn" href="#" target="_blank" class="bg-green-600 text-center py-3 rounded-lg font-bold">Download File</a>
+                <button onclick="copyLink()" class="bg-gray-600 py-3 rounded-lg font-bold">Copy Direct Link</button>
             </div>
         </div>
     </div>
 
     <script>
         async function fetchVideo() {
-            const urlInput = document.getElementById('teraUrl').value;
+            const urlInput = document.getElementById('teraUrl').value.trim();
             const fetchBtn = document.getElementById('fetchBtn');
             const loading = document.getElementById('loading');
             const result = document.getElementById('result');
 
-            if (!urlInput) return alert("Link toh daalo!");
+            if (!urlInput) return alert("Link paste karein!");
 
             loading.classList.remove('hidden');
             result.classList.add('hidden');
             fetchBtn.disabled = true;
 
             try {
-                // API Call
-                const apiUrl = `https://universal-downloaders.vercel.app/api/terabox/download?url=${encodeURIComponent(urlInput)}`;
-                const response = await fetch(apiUrl);
-                const resData = await response.json();
+                const proxyUrl = "https://universal-downloaders.vercel.app/api/terabox/download?url=";
+                const response = await fetch(proxyUrl + encodeURIComponent(urlInput));
+                const res = await response.json();
 
-                if (resData.success && resData.data["📄_Files"].length > 0) {
-                    const file = resData.data["📄_Files"][0];
-                    const dlLink = file["🔽_Direct_Download_Link"];
+                // Yahan hum structure ko deep check kar rahe hain
+                const data = res.data?.data || res.data;
+                const files = data?.["📄 Files"] || data?.["📄_Files"] || [];
 
-                    // Update UI
-                    document.getElementById('fileName').innerText = file["📂_Name"];
-                    document.getElementById('fileSize').innerText = `SIZE: ${file["📏_Size"]}`;
+                if (files.length > 0) {
+                    const file = files[0];
+                    const dlLink = file["🔽 Direct Download Link"] || file["🔽_Direct_Download_Link"];
+
+                    document.getElementById('fileName').innerText = file["📂 Name"] || file["📂_Name"];
+                    document.getElementById('fileSize').innerText = "Size: " + (file["📏 Size"] || file["📏_Size"]);
                     
-                    // Video Source
                     const player = document.getElementById('videoPlayer');
                     player.src = dlLink;
-
-                    // Download Button
+                    
                     document.getElementById('downloadBtn').href = dlLink;
-
-                    // VLC Player Link (Intents for Mobile)
-                    document.getElementById('vlcBtn').href = `vlc://${dlLink}`;
+                    window.currentDlLink = dlLink; // For copy button
 
                     result.classList.remove('hidden');
                 } else {
-                    alert("Error: Data nahi mila. Link expire ho gaya hoga.");
+                    alert("Video link nahi mil paya. Shayad link galat hai.");
                 }
             } catch (err) {
-                alert("Server error! Baad mein koshish karein.");
+                console.error(err);
+                alert("API Error! Browser issue ya network error ho sakta hai.");
             } finally {
                 loading.classList.add('hidden');
                 fetchBtn.disabled = false;
+            }
+        }
+
+        function copyLink() {
+            if (window.currentDlLink) {
+                navigator.clipboard.writeText(window.currentDlLink);
+                alert("Link copied to clipboard!");
             }
         }
     </script>
