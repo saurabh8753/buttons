@@ -1,54 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeraBox Video Player</title>
+    <meta name="referrer" content="no-referrer"> <title>TeraBox Player Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-900 text-white font-sans">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center p-6">
 
-    <div class="container mx-auto px-4 py-10 max-w-4xl">
-        <h1 class="text-3xl font-bold text-center mb-8 text-blue-400">
-            <i class="fas fa-play-circle mr-2"></i>TeraBox Player & Downloader
-        </h1>
-
-        <div class="bg-gray-800 p-6 rounded-lg shadow-xl mb-8">
-            <label class="block mb-2 text-sm font-medium">TeraBox URL Paste Karein:</label>
-            <div class="flex flex-col md:flex-row gap-4">
-                <input type="text" id="teraUrl" placeholder="https://1024terabox.com/s/..." 
-                    class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500">
-                <button onclick="fetchVideo()" id="fetchBtn"
-                    class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded font-bold transition duration-200">
-                    Fetch Video
-                </button>
-            </div>
-        </div>
-
-        <div id="loading" class="hidden text-center py-10">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-            <p class="mt-4">Fetching file details...</p>
-        </div>
-
-        <div id="result" class="hidden space-y-6">
+    <div class="w-full max-w-2xl bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700">
+        <h1 class="text-2xl font-bold text-center mb-6 text-blue-400">🚀 TeraBox Fast Player</h1>
+        
+        <div class="space-y-4">
+            <input type="text" id="teraUrl" placeholder="TeraBox Link Yahan Paste Karein..." 
+                class="w-full p-4 rounded-xl bg-slate-700 border border-slate-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
             
-            <div class="bg-black rounded-lg overflow-hidden shadow-2xl">
-                <video id="videoPlayer" controls class="w-full aspect-video bg-black">
-                    Your browser does not support the video tag.
-                </video>
+            <button onclick="fetchVideo()" id="fetchBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform">
+                Get Download/Stream Link
+            </button>
+        </div>
+
+        <div id="loading" class="hidden mt-10 text-center">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+            <p class="mt-2 text-slate-400 font-medium">Video Data Load Ho Raha Hai...</p>
+        </div>
+
+        <div id="result" class="hidden mt-8 space-y-4">
+            <div class="p-4 bg-slate-900 rounded-xl border border-slate-700">
+                <p id="fileName" class="font-bold text-blue-300 break-words mb-1">Filename</p>
+                <p id="fileSize" class="text-xs text-slate-500 uppercase tracking-widest font-bold">Size: 0 MB</p>
             </div>
 
-            <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-blue-500">
-                <h2 id="fileName" class="text-xl font-semibold mb-2 truncate">Video Name</h2>
-                <p id="fileSize" class="text-gray-400 mb-4">Size: 0 MB</p>
-                
-                <div class="flex flex-wrap gap-4">
-                    <a id="downloadBtn" href="#" target="_blank"
-                        class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded flex items-center font-bold">
-                        <i class="fas fa-download mr-2"></i> Download Now
-                    </a>
-                </div>
+            <div class="text-amber-400 text-sm bg-amber-950/30 p-3 rounded-lg border border-amber-900/50">
+                ⚠️ **Note:** Agar video yahan nahi chalti, toh "Download" ya "Play in VLC" ka use karein.
+            </div>
+
+            <video id="videoPlayer" controls preload="metadata" class="w-full rounded-xl border-2 border-slate-700 bg-black aspect-video"></video>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <a id="downloadBtn" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 py-3 rounded-lg font-bold shadow-md">
+                    <i class="fas fa-download"></i> Fast Download
+                </a>
+                <a id="vlcBtn" href="#" class="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 py-3 rounded-lg font-bold shadow-md">
+                    <i class="fas fa-play"></i> Play in VLC / MX
+                </a>
             </div>
         </div>
     </div>
@@ -60,44 +56,42 @@
             const loading = document.getElementById('loading');
             const result = document.getElementById('result');
 
-            if (!urlInput) {
-                alert("Please enter a TeraBox URL");
-                return;
-            }
+            if (!urlInput) return alert("Link toh daalo!");
 
-            // UI Reset
             loading.classList.remove('hidden');
             result.classList.add('hidden');
             fetchBtn.disabled = true;
 
             try {
+                // API Call
                 const apiUrl = `https://universal-downloaders.vercel.app/api/terabox/download?url=${encodeURIComponent(urlInput)}`;
                 const response = await fetch(apiUrl);
-                const json = await response.json();
+                const resData = await response.json();
 
-                if (json.success && json.data.📄_Files.length > 0) {
-                    const fileData = json.data.📄_Files[0];
-                    const downloadLink = fileData["🔽_Direct_Download_Link"];
+                if (resData.success && resData.data["📄_Files"].length > 0) {
+                    const file = resData.data["📄_Files"][0];
+                    const dlLink = file["🔽_Direct_Download_Link"];
+
+                    // Update UI
+                    document.getElementById('fileName').innerText = file["📂_Name"];
+                    document.getElementById('fileSize').innerText = `SIZE: ${file["📏_Size"]}`;
                     
-                    // Update UI with Data
-                    document.getElementById('fileName').innerText = fileData["📂_Name"];
-                    document.getElementById('fileSize').innerText = `Size: ${fileData["📏_Size"]}`;
-                    
-                    // Update Player & Download Link
+                    // Video Source
                     const player = document.getElementById('videoPlayer');
-                    player.src = downloadLink;
-                    
-                    const dlBtn = document.getElementById('downloadBtn');
-                    dlBtn.href = downloadLink;
+                    player.src = dlLink;
 
-                    // Show Results
+                    // Download Button
+                    document.getElementById('downloadBtn').href = dlLink;
+
+                    // VLC Player Link (Intents for Mobile)
+                    document.getElementById('vlcBtn').href = `vlc://${dlLink}`;
+
                     result.classList.remove('hidden');
                 } else {
-                    alert("Video details nahi mil payein. Link check karein.");
+                    alert("Error: Data nahi mila. Link expire ho gaya hoga.");
                 }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("API Error! Thodi der baad try karein.");
+            } catch (err) {
+                alert("Server error! Baad mein koshish karein.");
             } finally {
                 loading.classList.add('hidden');
                 fetchBtn.disabled = false;
