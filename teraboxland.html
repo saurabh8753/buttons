@@ -4,76 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>TeraBox Ultra Player</title>
+    <title>TeraBox Fast Streamer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen p-4 md:p-10 font-sans">
+<body class="bg-[#0f172a] text-slate-200 min-h-screen p-4 font-sans">
 
     <div class="max-w-2xl mx-auto">
-        <div class="text-center mb-10">
-            <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-                TeraBox Video Hub
-            </h1>
-            <p class="text-slate-400 text-sm mt-2">Bina buffering ke dekhne ke liye VLC ka use karein</p>
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-blue-400">TeraBox Player Fixed</h1>
         </div>
 
-        <div class="bg-slate-800/50 p-6 rounded-3xl border border-slate-700 backdrop-blur-sm shadow-xl">
-            <div class="flex flex-col gap-4">
-                <input type="text" id="teraUrl" placeholder="TeraBox link yahan dalein..." 
-                    class="w-full p-4 rounded-2xl bg-slate-900/50 border border-slate-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-                
-                <button onclick="fetchVideo()" id="fetchBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-bold shadow-lg shadow-blue-900/20 active:scale-95 transition-all">
-                    Generate High-Speed Links
-                </button>
-            </div>
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-xl mb-6">
+            <input type="text" id="teraUrl" placeholder="TeraBox link paste karein..." 
+                class="w-full p-4 rounded-xl bg-slate-900 border border-slate-600 focus:ring-2 focus:ring-blue-500 outline-none mb-3">
+            <button onclick="fetchVideo()" id="fetchBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-bold transition-all">
+                Fetch Video
+            </button>
         </div>
 
-        <div id="loading" class="hidden mt-10 text-center">
-            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
-            <p class="mt-3 text-blue-400">Fetching Direct Server Links...</p>
+        <div id="loading" class="hidden text-center py-10">
+            <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+            <p class="mt-2">Link generate ho raha hai...</p>
         </div>
 
-        <div id="result" class="hidden mt-8 space-y-6 animate-in fade-in duration-500">
+        <div id="result" class="hidden space-y-4">
             
-            <div class="bg-slate-800 p-4 rounded-2xl border-l-4 border-blue-500">
-                <h2 id="fileName" class="font-bold text-white truncate">Filename.mp4</h2>
-                <span id="fileSize" class="text-xs font-mono text-slate-400 bg-slate-900 px-2 py-1 rounded mt-2 inline-block">SIZE: 0 MB</span>
+            <div class="bg-black rounded-2xl overflow-hidden border border-slate-700">
+                <video id="videoPlayer" controls preload="auto" class="w-full aspect-video bg-black"></video>
+                <div class="p-3 bg-slate-800 border-t border-slate-700">
+                    <p id="fileName" class="text-sm font-bold truncate">Filename.mp4</p>
+                    <p id="fileSize" class="text-xs text-gray-400 mt-1 uppercase">Size: 0 MB</p>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <a id="vlcBtn" href="#" class="flex items-center justify-center gap-3 bg-[#e67e22] hover:bg-[#d35400] p-4 rounded-2xl font-bold transition-all">
-                    <i class="fas fa-orange-vlc text-2xl"></i> Play in VLC
-                </a>
-
-                <a id="mxBtn" href="#" class="flex items-center justify-center gap-3 bg-[#0055ff] hover:bg-[#0044cc] p-4 rounded-2xl font-bold transition-all">
-                    <i class="fas fa-play-circle text-2xl"></i> MX Player
-                </a>
-
-                <a id="downloadBtn" href="#" target="_blank" class="flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-500 p-4 rounded-2xl font-bold transition-all">
-                    <i class="fas fa-download"></i> Fast Download
-                </a>
-
-                <button onclick="copyLink()" class="flex items-center justify-center gap-3 bg-slate-700 hover:bg-slate-600 p-4 rounded-2xl font-bold transition-all">
-                    <i class="fas fa-copy"></i> Copy Direct Link
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="openInVLC()" class="flex items-center justify-center gap-2 bg-orange-600 py-3 rounded-xl font-bold text-sm">
+                    <i class="fas fa-orange-vlc"></i> Play VLC
+                </button>
+                
+                <button onclick="openInMX()" class="flex items-center justify-center gap-2 bg-blue-600 py-3 rounded-xl font-bold text-sm">
+                    <i class="fas fa-play-circle"></i> Play MX
                 </button>
             </div>
 
-            <div class="mt-4">
-                <p class="text-xs text-slate-500 mb-2 text-center uppercase tracking-widest">Browser Preview (Slow)</p>
-                <video id="videoPlayer" controls class="w-full rounded-2xl bg-black aspect-video border border-slate-700"></video>
+            <div class="grid grid-cols-2 gap-3">
+                <a id="downloadBtn" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-emerald-600 py-3 rounded-xl font-bold text-sm text-center">
+                    <i class="fas fa-download"></i> Download
+                </a>
+                <button onclick="copyDirectLink()" class="bg-slate-700 py-3 rounded-xl font-bold text-sm">
+                    <i class="fas fa-copy"></i> Copy Link
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        let currentLink = "";
+
         async function fetchVideo() {
             const urlInput = document.getElementById('teraUrl').value.trim();
             const fetchBtn = document.getElementById('fetchBtn');
             const loading = document.getElementById('loading');
             const result = document.getElementById('result');
 
-            if (!urlInput) return alert("Link missing!");
+            if (!urlInput) return alert("Link daalein!");
 
             loading.classList.remove('hidden');
             result.classList.add('hidden');
@@ -84,48 +79,54 @@
                 const response = await fetch(apiUrl);
                 const res = await response.json();
 
-                // Double check data structure from your API
                 const data = res.data?.data || res.data;
                 const files = data?.["📄 Files"] || data?.["📄_Files"] || [];
 
                 if (files.length > 0) {
                     const file = files[0];
-                    const dlLink = file["🔽 Direct Download Link"] || file["🔽_Direct_Download_Link"];
+                    currentLink = file["🔽 Direct Download Link"] || file["🔽_Direct_Download_Link"];
 
-                    // Update UI Details
                     document.getElementById('fileName').innerText = file["📂 Name"] || file["📂_Name"];
-                    document.getElementById('fileSize').innerText = "SIZE: " + (file["📏 Size"] || file["📏_Size"]);
+                    document.getElementById('fileSize').innerText = "Size: " + (file["📏 Size"] || file["📏_Size"]);
                     
-                    // Update Player
-                    document.getElementById('videoPlayer').src = dlLink;
-                    
-                    // Update Download Button
-                    document.getElementById('downloadBtn').href = dlLink;
+                    // Browser Player update
+                    document.getElementById('videoPlayer').src = currentLink;
+                    document.getElementById('downloadBtn').href = currentLink;
 
-                    // Deep Links for External Players
-                    // VLC: intent://link#Intent;package=org.videolan.vlc;end
-                    document.getElementById('vlcBtn').href = `intent:${dlLink}#Intent;package=org.videolan.vlc;end`;
-                    
-                    // MX Player: intent://link#Intent;package=com.mxtech.videoplayer.ad;end
-                    document.getElementById('mxBtn').href = `intent:${dlLink}#Intent;package=com.mxtech.videoplayer.ad;end`;
-
-                    window.latestDlLink = dlLink;
                     result.classList.remove('hidden');
                 } else {
-                    alert("Error: Link invalid ya expire ho chuka hai.");
+                    alert("Error: Link invalid hai!");
                 }
             } catch (err) {
-                alert("Server Error! API response check karein.");
+                alert("Server issue!");
             } finally {
                 loading.classList.add('hidden');
                 fetchBtn.disabled = false;
             }
         }
 
-        function copyLink() {
-            if (window.latestDlLink) {
-                navigator.clipboard.writeText(window.latestDlLink);
-                alert("Direct link copied! Ab aap ise kisi bhi player mein paste kar sakte hain.");
+        // VLC Fix: Using vlc:// protocol for direct trigger
+        function openInVLC() {
+            if (!currentLink) return;
+            const vlcUrl = `vlc://${currentLink.replace(/^https?:\/\//, '')}`;
+            window.location.href = vlcUrl;
+            
+            // Fallback for Android Intent if protocol fails
+            setTimeout(() => {
+                window.location.href = `intent://${currentLink.replace(/^https?:\/\//, '')}#Intent;scheme=http;package=org.videolan.vlc;end`;
+            }, 500);
+        }
+
+        // MX Player Fix: Using intent with correct scheme
+        function openInMX() {
+            if (!currentLink) return;
+            window.location.href = `intent:${currentLink}#Intent;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent("TeraBox Video")};end`;
+        }
+
+        function copyDirectLink() {
+            if (currentLink) {
+                navigator.clipboard.writeText(currentLink);
+                alert("Direct Link Copied!");
             }
         }
     </script>
