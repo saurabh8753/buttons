@@ -3,80 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terabox Video Downloader</title>
+<title>Terabox Video Player</title>
 
 <style>
 
 body{
-font-family: Arial, sans-serif;
 background:#0f172a;
+font-family:Arial;
 color:white;
-text-align:center;
-padding:40px;
+display:flex;
+justify-content:center;
+padding:30px;
 }
 
 .container{
-max-width:700px;
-margin:auto;
+max-width:750px;
+width:100%;
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+}
+
+.input-box{
+display:flex;
+gap:10px;
 }
 
 input{
-width:100%;
-padding:15px;
+flex:1;
+padding:14px;
 border-radius:10px;
 border:none;
-margin-top:10px;
 font-size:16px;
 }
 
 button{
-padding:15px 25px;
-border:none;
 background:#2563eb;
+border:none;
 color:white;
+padding:14px 20px;
 border-radius:10px;
 font-size:16px;
 cursor:pointer;
-margin-top:10px;
 }
 
 button:hover{
 background:#1d4ed8;
 }
 
-.video-box{
-margin-top:30px;
-}
-
-video{
-width:100%;
-border-radius:10px;
+.player-card{
+margin-top:25px;
+background:#1e293b;
+padding:15px;
+border-radius:12px;
 }
 
 .thumbnail{
 width:100%;
 border-radius:10px;
-margin-top:20px;
 }
 
-.file-info{
+video{
+width:100%;
 margin-top:10px;
-color:#94a3b8;
+border-radius:10px;
+background:black;
 }
 
-.download-btn{
-display:inline-block;
+.info{
+margin-top:10px;
+color:#cbd5f5;
+}
+
+.download{
+display:block;
 margin-top:15px;
-padding:12px 20px;
 background:#22c55e;
-border-radius:8px;
-text-decoration:none;
+padding:14px;
+text-align:center;
+border-radius:10px;
 color:white;
+text-decoration:none;
+font-weight:bold;
 }
 
 .loader{
-margin-top:20px;
 display:none;
+text-align:center;
+margin-top:20px;
+}
+
+.spinner{
+border:5px solid #334155;
+border-top:5px solid #3b82f6;
+border-radius:50%;
+width:40px;
+height:40px;
+animation:spin 1s linear infinite;
+margin:auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg)}
+100%{transform:rotate(360deg)}
 }
 
 </style>
@@ -86,13 +117,17 @@ display:none;
 
 <div class="container">
 
-<h1>Terabox Video Downloader</h1>
+<h1>Terabox Video Player</h1>
 
+<div class="input-box">
 <input id="url" placeholder="Paste Terabox Link">
+<button onclick="loadVideo()">Get Video</button>
+</div>
 
-<button onclick="getVideo()">Get Video</button>
-
-<div class="loader" id="loader">Fetching video...</div>
+<div class="loader" id="loader">
+<div class="spinner"></div>
+<p>Fetching Video...</p>
+</div>
 
 <div id="result"></div>
 
@@ -100,28 +135,26 @@ display:none;
 
 <script>
 
-async function getVideo(){
+async function loadVideo(){
 
 let url=document.getElementById("url").value;
 
 if(!url){
-alert("Enter Terabox link");
+alert("Paste Terabox link");
 return;
 }
 
 document.getElementById("loader").style.display="block";
+document.getElementById("result").innerHTML="";
 
 let api="https://universal-downloaders.vercel.app/api/terabox/download?url="+encodeURIComponent(url);
+
+try{
 
 let res=await fetch(api);
 let data=await res.json();
 
 document.getElementById("loader").style.display="none";
-
-if(!data.success){
-alert("Failed to fetch video");
-return;
-}
 
 let file=data.data.data["📄 Files"][0];
 
@@ -132,24 +165,33 @@ let thumb=file["🖼️ Thumbnails"]["850x580"];
 
 document.getElementById("result").innerHTML=`
 
+<div class="player-card">
+
 <img class="thumbnail" src="${thumb}">
 
-<div class="video-box">
+<video id="player" controls playsinline preload="metadata" poster="${thumb}">
+<source src="${video}" type="video/mp4">
+</video>
 
-<video controls src="${video}"></video>
-
-</div>
-
-<div class="file-info">
-${name}<br>
+<div class="info">
+<b>${name}</b><br>
 Size: ${size}
 </div>
 
-<a class="download-btn" href="${video}" download>
+<a class="download" href="${video}" download>
 Download Video
 </a>
 
+</div>
+
 `;
+
+}catch(e){
+
+document.getElementById("loader").style.display="none";
+alert("Failed to fetch video");
+
+}
 
 }
 
