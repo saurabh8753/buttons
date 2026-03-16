@@ -1,201 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terabox Video Player</title>
-
-<style>
-
-body{
-background:#0f172a;
-font-family:Arial;
-color:white;
-display:flex;
-justify-content:center;
-padding:30px;
-}
-
-.container{
-max-width:750px;
-width:100%;
-}
-
-h1{
-text-align:center;
-margin-bottom:20px;
-}
-
-.input-box{
-display:flex;
-gap:10px;
-}
-
-input{
-flex:1;
-padding:14px;
-border-radius:10px;
-border:none;
-font-size:16px;
-}
-
-button{
-background:#2563eb;
-border:none;
-color:white;
-padding:14px 20px;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#1d4ed8;
-}
-
-.player-card{
-margin-top:25px;
-background:#1e293b;
-padding:15px;
-border-radius:12px;
-}
-
-.thumbnail{
-width:100%;
-border-radius:10px;
-}
-
-video{
-width:100%;
-margin-top:10px;
-border-radius:10px;
-background:black;
-}
-
-.info{
-margin-top:10px;
-color:#cbd5f5;
-}
-
-.download{
-display:block;
-margin-top:15px;
-background:#22c55e;
-padding:14px;
-text-align:center;
-border-radius:10px;
-color:white;
-text-decoration:none;
-font-weight:bold;
-}
-
-.loader{
-display:none;
-text-align:center;
-margin-top:20px;
-}
-
-.spinner{
-border:5px solid #334155;
-border-top:5px solid #3b82f6;
-border-radius:50%;
-width:40px;
-height:40px;
-animation:spin 1s linear infinite;
-margin:auto;
-}
-
-@keyframes spin{
-0%{transform:rotate(0deg)}
-100%{transform:rotate(360deg)}
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraBox Video Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<body class="bg-gray-900 text-white font-sans">
 
-<body>
+    <div class="container mx-auto px-4 py-10 max-w-4xl">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-400">
+            <i class="fas fa-play-circle mr-2"></i>TeraBox Player & Downloader
+        </h1>
 
-<div class="container">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-xl mb-8">
+            <label class="block mb-2 text-sm font-medium">TeraBox URL Paste Karein:</label>
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="teraUrl" placeholder="https://1024terabox.com/s/..." 
+                    class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500">
+                <button onclick="fetchVideo()" id="fetchBtn"
+                    class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded font-bold transition duration-200">
+                    Fetch Video
+                </button>
+            </div>
+        </div>
 
-<h1>Terabox Video Player</h1>
+        <div id="loading" class="hidden text-center py-10">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+            <p class="mt-4">Fetching file details...</p>
+        </div>
 
-<div class="input-box">
-<input id="url" placeholder="Paste Terabox Link">
-<button onclick="loadVideo()">Get Video</button>
-</div>
+        <div id="result" class="hidden space-y-6">
+            
+            <div class="bg-black rounded-lg overflow-hidden shadow-2xl">
+                <video id="videoPlayer" controls class="w-full aspect-video bg-black">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
 
-<div class="loader" id="loader">
-<div class="spinner"></div>
-<p>Fetching Video...</p>
-</div>
+            <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-blue-500">
+                <h2 id="fileName" class="text-xl font-semibold mb-2 truncate">Video Name</h2>
+                <p id="fileSize" class="text-gray-400 mb-4">Size: 0 MB</p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <a id="downloadBtn" href="#" target="_blank"
+                        class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded flex items-center font-bold">
+                        <i class="fas fa-download mr-2"></i> Download Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div id="result"></div>
+    <script>
+        async function fetchVideo() {
+            const urlInput = document.getElementById('teraUrl').value;
+            const fetchBtn = document.getElementById('fetchBtn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
 
-</div>
+            if (!urlInput) {
+                alert("Please enter a TeraBox URL");
+                return;
+            }
 
-<script>
+            // UI Reset
+            loading.classList.remove('hidden');
+            result.classList.add('hidden');
+            fetchBtn.disabled = true;
 
-async function loadVideo(){
+            try {
+                const apiUrl = `https://universal-downloaders.vercel.app/api/terabox/download?url=${encodeURIComponent(urlInput)}`;
+                const response = await fetch(apiUrl);
+                const json = await response.json();
 
-let url=document.getElementById("url").value;
+                if (json.success && json.data.📄_Files.length > 0) {
+                    const fileData = json.data.📄_Files[0];
+                    const downloadLink = fileData["🔽_Direct_Download_Link"];
+                    
+                    // Update UI with Data
+                    document.getElementById('fileName').innerText = fileData["📂_Name"];
+                    document.getElementById('fileSize').innerText = `Size: ${fileData["📏_Size"]}`;
+                    
+                    // Update Player & Download Link
+                    const player = document.getElementById('videoPlayer');
+                    player.src = downloadLink;
+                    
+                    const dlBtn = document.getElementById('downloadBtn');
+                    dlBtn.href = downloadLink;
 
-if(!url){
-alert("Paste Terabox link");
-return;
-}
-
-document.getElementById("loader").style.display="block";
-document.getElementById("result").innerHTML="";
-
-let api="https://universal-downloaders.vercel.app/api/terabox/download?url="+encodeURIComponent(url);
-
-try{
-
-let res=await fetch(api);
-let data=await res.json();
-
-document.getElementById("loader").style.display="none";
-
-let file=data.data.data["📄 Files"][0];
-
-let name=file["📂 Name"];
-let size=file["📏 Size"];
-let video=file["🔽 Direct Download Link"];
-let thumb=file["🖼️ Thumbnails"]["850x580"];
-
-document.getElementById("result").innerHTML=`
-
-<div class="player-card">
-
-<img class="thumbnail" src="${thumb}">
-
-<video id="player" controls playsinline preload="metadata" poster="${thumb}">
-<source src="${video}" type="video/mp4">
-</video>
-
-<div class="info">
-<b>${name}</b><br>
-Size: ${size}
-</div>
-
-<a class="download" href="${video}" download>
-Download Video
-</a>
-
-</div>
-
-`;
-
-}catch(e){
-
-document.getElementById("loader").style.display="none";
-alert("Failed to fetch video");
-
-}
-
-}
-
-</script>
-
+                    // Show Results
+                    result.classList.remove('hidden');
+                } else {
+                    alert("Video details nahi mil payein. Link check karein.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("API Error! Thodi der baad try karein.");
+            } finally {
+                loading.classList.add('hidden');
+                fetchBtn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
