@@ -75,7 +75,7 @@
             fetchBtn.disabled = true;
 
             try {
-                const apiUrl = `https://universal-downloaders.vercel.app/api/terabox/download?url=${encodeURIComponent(urlInput)}`;
+                const apiUrl = `https://universaldownloaders.yaartunah.workers.dev/?url=${encodeURIComponent(urlInput)}`;
                 const response = await fetch(apiUrl);
                 const res = await response.json();
 
